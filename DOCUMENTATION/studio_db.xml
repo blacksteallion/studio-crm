@@ -1,0 +1,1567 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+- phpMyAdmin XML Dump
+- version 5.2.3
+- https://www.phpmyadmin.net
+-
+- Host: 127.0.0.1:3306
+- Generation Time: Feb 25, 2026 at 12:07 PM
+- Server version: 8.0.36-28
+- PHP Version: 8.1.34
+-->
+
+<pma_xml_export version="1.0" xmlns:pma="https://www.phpmyadmin.net/some_doc_url/">
+    <!--
+    - Structure schemas
+    -->
+    <pma:structure_schemas>
+        <pma:database name="tcstudio" collation="utf8mb4_general_ci" charset="utf8mb4">
+            <pma:table name="bookings">
+                CREATE TABLE `bookings` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `customer_id` bigint unsigned NOT NULL,
+                  `inquiry_id` bigint unsigned DEFAULT NULL,
+                  `staff_id` bigint unsigned DEFAULT NULL,
+                  `booking_date` date NOT NULL,
+                  `start_time` time NOT NULL,
+                  `end_time` time NOT NULL,
+                  `status` varchar(50) COLLATE utf8mb4_general_ci DEFAULT &#039;Scheduled&#039;,
+                  `notes` text COLLATE utf8mb4_general_ci,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `customer_id` (`customer_id`),
+                  KEY `inquiry_id` (`inquiry_id`),
+                  KEY `staff_id` (`staff_id`),
+                  CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+                  CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`inquiry_id`) REFERENCES `inquiries` (`id`) ON DELETE SET NULL,
+                  CONSTRAINT `bookings_ibfk_3` FOREIGN KEY (`staff_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+                ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+            </pma:table>
+            <pma:table name="booking_items">
+                CREATE TABLE `booking_items` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `booking_id` bigint unsigned NOT NULL,
+                  `product_service_id` bigint unsigned NOT NULL,
+                  `item_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `unit_price` decimal(10,2) NOT NULL,
+                  `gst_rate` decimal(5,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `quantity` decimal(8,2) NOT NULL DEFAULT &#039;1.00&#039;,
+                  `gst_amount` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `total` decimal(10,2) NOT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `booking_items_booking_id_foreign` (`booking_id`),
+                  KEY `booking_items_product_service_id_foreign` (`product_service_id`),
+                  CONSTRAINT `booking_items_booking_id_foreign` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE,
+                  CONSTRAINT `booking_items_product_service_id_foreign` FOREIGN KEY (`product_service_id`) REFERENCES `product_services` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="cache">
+                CREATE TABLE `cache` (
+                  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `expiration` int NOT NULL,
+                  PRIMARY KEY (`key`),
+                  KEY `cache_expiration_index` (`expiration`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="cache_locks">
+                CREATE TABLE `cache_locks` (
+                  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `expiration` int NOT NULL,
+                  PRIMARY KEY (`key`),
+                  KEY `cache_locks_expiration_index` (`expiration`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="customers">
+                CREATE TABLE `customers` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `website` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `gst_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `address_line1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `address_line2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `city` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `state` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `pincode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `country` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT &#039;India&#039;,
+                  `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `status` tinyint(1) DEFAULT &#039;1&#039;,
+                  `mobile` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `business_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `remarks` text COLLATE utf8mb4_unicode_ci,
+                  `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="expenses">
+                CREATE TABLE `expenses` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `amount` decimal(10,2) NOT NULL,
+                  `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `expense_date` date NOT NULL,
+                  `receipt_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `description` text COLLATE utf8mb4_unicode_ci,
+                  `reference_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="failed_jobs">
+                CREATE TABLE `failed_jobs` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="inquiries">
+                CREATE TABLE `inquiries` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `customer_id` bigint unsigned NOT NULL,
+                  `business_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `lead_source_id` bigint unsigned DEFAULT NULL,
+                  `primary_date` date NOT NULL,
+                  `alternate_date` date DEFAULT NULL,
+                  `from_time` time NOT NULL,
+                  `to_time` time NOT NULL,
+                  `total_hours` decimal(5,2) DEFAULT NULL,
+                  `budget` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT &#039;New&#039;,
+                  `follow_up_date` date DEFAULT NULL,
+                  `assigned_staff_id` bigint unsigned DEFAULT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `inquiries_customer_id_foreign` (`customer_id`),
+                  KEY `inquiries_assigned_staff_id_foreign` (`assigned_staff_id`),
+                  KEY `fk_inquiries_source` (`lead_source_id`),
+                  CONSTRAINT `fk_inquiries_source` FOREIGN KEY (`lead_source_id`) REFERENCES `lead_sources` (`id`) ON DELETE SET NULL,
+                  CONSTRAINT `inquiries_assigned_staff_id_foreign` FOREIGN KEY (`assigned_staff_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+                  CONSTRAINT `inquiries_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="inquiry_items">
+                CREATE TABLE `inquiry_items` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `inquiry_id` bigint unsigned NOT NULL,
+                  `product_service_id` bigint unsigned NOT NULL,
+                  `item_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `unit_price` decimal(10,2) NOT NULL,
+                  `gst_rate` decimal(5,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `quantity` decimal(8,2) NOT NULL DEFAULT &#039;1.00&#039;,
+                  `gst_amount` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `total` decimal(10,2) NOT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `inquiry_items_inquiry_id_foreign` (`inquiry_id`),
+                  KEY `inquiry_items_product_service_id_foreign` (`product_service_id`),
+                  CONSTRAINT `inquiry_items_inquiry_id_foreign` FOREIGN KEY (`inquiry_id`) REFERENCES `inquiries` (`id`) ON DELETE CASCADE,
+                  CONSTRAINT `inquiry_items_product_service_id_foreign` FOREIGN KEY (`product_service_id`) REFERENCES `product_services` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="inquiry_logs">
+                CREATE TABLE `inquiry_logs` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `inquiry_id` bigint unsigned NOT NULL,
+                  `user_id` bigint unsigned NOT NULL,
+                  `type` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                  `message` text COLLATE utf8mb4_general_ci,
+                  `log_date` date NOT NULL,
+                  `log_time` time NOT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `inquiry_id` (`inquiry_id`),
+                  KEY `user_id` (`user_id`),
+                  CONSTRAINT `inquiry_logs_ibfk_1` FOREIGN KEY (`inquiry_id`) REFERENCES `inquiries` (`id`) ON DELETE CASCADE,
+                  CONSTRAINT `inquiry_logs_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+            </pma:table>
+            <pma:table name="integrations">
+                CREATE TABLE `integrations` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `platform` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `page_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `page_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `access_token` text COLLATE utf8mb4_unicode_ci,
+                  `field_mapping` json DEFAULT NULL,
+                  `is_active` tinyint(1) NOT NULL DEFAULT &#039;0&#039;,
+                  `last_synced_at` timestamp NULL DEFAULT NULL,
+                  `last_error` text COLLATE utf8mb4_unicode_ci,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `integrations_platform_index` (`platform`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="jobs">
+                CREATE TABLE `jobs` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `attempts` tinyint unsigned NOT NULL,
+                  `reserved_at` int unsigned DEFAULT NULL,
+                  `available_at` int unsigned NOT NULL,
+                  `created_at` int unsigned NOT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `jobs_queue_index` (`queue`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="job_batches">
+                CREATE TABLE `job_batches` (
+                  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `total_jobs` int NOT NULL,
+                  `pending_jobs` int NOT NULL,
+                  `failed_jobs` int NOT NULL,
+                  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `options` mediumtext COLLATE utf8mb4_unicode_ci,
+                  `cancelled_at` int DEFAULT NULL,
+                  `created_at` int NOT NULL,
+                  `finished_at` int DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="lead_sources">
+                CREATE TABLE `lead_sources` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                  `status` tinyint(1) DEFAULT &#039;1&#039;,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+            </pma:table>
+            <pma:table name="migrations">
+                CREATE TABLE `migrations` (
+                  `id` int unsigned NOT NULL AUTO_INCREMENT,
+                  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `batch` int NOT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="model_has_permissions">
+                CREATE TABLE `model_has_permissions` (
+                  `permission_id` bigint unsigned NOT NULL,
+                  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `model_id` bigint unsigned NOT NULL,
+                  PRIMARY KEY (`permission_id`,`model_id`,`model_type`),
+                  KEY `model_has_permissions_model_id_model_type_index` (`model_id`,`model_type`),
+                  CONSTRAINT `model_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="model_has_roles">
+                CREATE TABLE `model_has_roles` (
+                  `role_id` bigint unsigned NOT NULL,
+                  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `model_id` bigint unsigned NOT NULL,
+                  PRIMARY KEY (`role_id`,`model_id`,`model_type`),
+                  KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`),
+                  CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="orders">
+                CREATE TABLE `orders` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `customer_id` bigint unsigned NOT NULL,
+                  `booking_id` bigint unsigned DEFAULT NULL,
+                  `invoice_number` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+                  `invoice_date` date NOT NULL,
+                  `due_date` date DEFAULT NULL,
+                  `subtotal` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `tax` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `discount` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `total_amount` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `status` varchar(50) COLLATE utf8mb4_general_ci DEFAULT &#039;Unpaid&#039;,
+                  `notes` text COLLATE utf8mb4_general_ci,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `invoice_number` (`invoice_number`),
+                  KEY `customer_id` (`customer_id`),
+                  KEY `booking_id` (`booking_id`),
+                  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+                  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE SET NULL
+                ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+            </pma:table>
+            <pma:table name="order_items">
+                CREATE TABLE `order_items` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `order_id` bigint unsigned NOT NULL,
+                  `item_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                  `quantity` decimal(10,2) NOT NULL DEFAULT &#039;1.00&#039;,
+                  `gst_amount` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `unit_price` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `gst_rate` decimal(5,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `amount` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `order_id` (`order_id`),
+                  CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+            </pma:table>
+            <pma:table name="password_reset_tokens">
+                CREATE TABLE `password_reset_tokens` (
+                  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`email`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="payments">
+                CREATE TABLE `payments` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `order_id` bigint unsigned NOT NULL,
+                  `transaction_date` date NOT NULL,
+                  `amount` decimal(10,2) NOT NULL,
+                  `payment_method` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+                  `reference_number` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+                  `notes` text COLLATE utf8mb4_general_ci,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `order_id` (`order_id`),
+                  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+            </pma:table>
+            <pma:table name="permissions">
+                CREATE TABLE `permissions` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `permissions_name_guard_name_unique` (`name`,`guard_name`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="product_services">
+                CREATE TABLE `product_services` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `type` enum(&#039;Service&#039;,&#039;Product&#039;) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT &#039;Service&#039;,
+                  `pricing_model` enum(&#039;Hourly&#039;,&#039;Fixed&#039;,&#039;Per Unit&#039;) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT &#039;Fixed&#039;,
+                  `price` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `gst_rate` decimal(5,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                  `is_active` tinyint(1) NOT NULL DEFAULT &#039;1&#039;,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="product_service_tables">
+                CREATE TABLE `product_service_tables` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="roles">
+                CREATE TABLE `roles` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `roles_name_guard_name_unique` (`name`,`guard_name`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="role_has_permissions">
+                CREATE TABLE `role_has_permissions` (
+                  `permission_id` bigint unsigned NOT NULL,
+                  `role_id` bigint unsigned NOT NULL,
+                  PRIMARY KEY (`permission_id`,`role_id`),
+                  KEY `role_has_permissions_role_id_foreign` (`role_id`),
+                  CONSTRAINT `role_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+                  CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="services">
+                CREATE TABLE `services` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `description` text COLLATE utf8mb4_unicode_ci,
+                  `price_per_slot` decimal(10,2) NOT NULL DEFAULT &#039;0.00&#039;,
+                  `is_active` tinyint(1) NOT NULL DEFAULT &#039;1&#039;,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="sessions">
+                CREATE TABLE `sessions` (
+                  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `user_id` bigint unsigned DEFAULT NULL,
+                  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `user_agent` text COLLATE utf8mb4_unicode_ci,
+                  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `last_activity` int NOT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `sessions_user_id_index` (`user_id`),
+                  KEY `sessions_last_activity_index` (`last_activity`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+            <pma:table name="settings">
+                CREATE TABLE `settings` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `key` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                  `value` text COLLATE utf8mb4_general_ci,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `settings_key_unique` (`key`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+            </pma:table>
+            <pma:table name="users">
+                CREATE TABLE `users` (
+                  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                  `role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT &#039;staff&#039;,
+                  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `status` tinyint(1) NOT NULL DEFAULT &#039;1&#039;,
+                  `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `mobile` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `email_verified_at` timestamp NULL DEFAULT NULL,
+                  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                  `created_at` timestamp NULL DEFAULT NULL,
+                  `updated_at` timestamp NULL DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `users_email_unique` (`email`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </pma:table>
+        </pma:database>
+    </pma:structure_schemas>
+
+    <!--
+    - Database: 'tcstudio'
+    -->
+    <database name="tcstudio">
+        <!-- Table bookings -->
+        <!-- Table booking_items -->
+        <!-- Table cache -->
+        <table name="cache">
+            <column name="key">laravel-cache-spatie.permission.cache</column>
+            <column name="value">a:3:{s:5:&quot;alias&quot;;a:4:{s:1:&quot;a&quot;;s:2:&quot;id&quot;;s:1:&quot;b&quot;;s:4:&quot;name&quot;;s:1:&quot;c&quot;;s:10:&quot;guard_name&quot;;s:1:&quot;r&quot;;s:5:&quot;roles&quot;;}s:11:&quot;permissions&quot;;a:50:{i:0;a:4:{s:1:&quot;a&quot;;i:1;s:1:&quot;b&quot;;s:14:&quot;view dashboard&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:1;a:4:{s:1:&quot;a&quot;;i:2;s:1:&quot;b&quot;;s:14:&quot;view customers&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:2;a:4:{s:1:&quot;a&quot;;i:3;s:1:&quot;b&quot;;s:16:&quot;create customers&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:3;a:4:{s:1:&quot;a&quot;;i:4;s:1:&quot;b&quot;;s:14:&quot;edit customers&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:4;a:4:{s:1:&quot;a&quot;;i:5;s:1:&quot;b&quot;;s:16:&quot;delete customers&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:5;a:4:{s:1:&quot;a&quot;;i:6;s:1:&quot;b&quot;;s:16:&quot;export customers&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:6;a:4:{s:1:&quot;a&quot;;i:7;s:1:&quot;b&quot;;s:22:&quot;toggle customer status&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:7;a:4:{s:1:&quot;a&quot;;i:8;s:1:&quot;b&quot;;s:10:&quot;view staff&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:8;a:4:{s:1:&quot;a&quot;;i:9;s:1:&quot;b&quot;;s:12:&quot;create staff&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:9;a:4:{s:1:&quot;a&quot;;i:10;s:1:&quot;b&quot;;s:10:&quot;edit staff&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:10;a:4:{s:1:&quot;a&quot;;i:11;s:1:&quot;b&quot;;s:12:&quot;delete staff&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:11;a:4:{s:1:&quot;a&quot;;i:12;s:1:&quot;b&quot;;s:12:&quot;export staff&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:12;a:4:{s:1:&quot;a&quot;;i:13;s:1:&quot;b&quot;;s:19:&quot;toggle staff status&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:13;a:4:{s:1:&quot;a&quot;;i:14;s:1:&quot;b&quot;;s:14:&quot;view inquiries&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:14;a:4:{s:1:&quot;a&quot;;i:15;s:1:&quot;b&quot;;s:16:&quot;create inquiries&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:15;a:4:{s:1:&quot;a&quot;;i:16;s:1:&quot;b&quot;;s:14:&quot;edit inquiries&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:16;a:4:{s:1:&quot;a&quot;;i:17;s:1:&quot;b&quot;;s:16:&quot;delete inquiries&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:17;a:4:{s:1:&quot;a&quot;;i:18;s:1:&quot;b&quot;;s:16:&quot;export inquiries&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:18;a:4:{s:1:&quot;a&quot;;i:19;s:1:&quot;b&quot;;s:19:&quot;manage inquiry logs&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:19;a:4:{s:1:&quot;a&quot;;i:20;s:1:&quot;b&quot;;s:17:&quot;convert inquiries&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:20;a:4:{s:1:&quot;a&quot;;i:21;s:1:&quot;b&quot;;s:13:&quot;view bookings&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:21;a:4:{s:1:&quot;a&quot;;i:22;s:1:&quot;b&quot;;s:15:&quot;create bookings&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:22;a:4:{s:1:&quot;a&quot;;i:23;s:1:&quot;b&quot;;s:13:&quot;edit bookings&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:23;a:4:{s:1:&quot;a&quot;;i:24;s:1:&quot;b&quot;;s:15:&quot;delete bookings&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:24;a:4:{s:1:&quot;a&quot;;i:25;s:1:&quot;b&quot;;s:15:&quot;export bookings&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:25;a:4:{s:1:&quot;a&quot;;i:26;s:1:&quot;b&quot;;s:21:&quot;view booking calendar&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:26;a:4:{s:1:&quot;a&quot;;i:27;s:1:&quot;b&quot;;s:11:&quot;view orders&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:27;a:4:{s:1:&quot;a&quot;;i:28;s:1:&quot;b&quot;;s:13:&quot;create orders&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:28;a:4:{s:1:&quot;a&quot;;i:29;s:1:&quot;b&quot;;s:11:&quot;edit orders&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:29;a:4:{s:1:&quot;a&quot;;i:30;s:1:&quot;b&quot;;s:13:&quot;delete orders&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:30;a:4:{s:1:&quot;a&quot;;i:31;s:1:&quot;b&quot;;s:13:&quot;export orders&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:31;a:4:{s:1:&quot;a&quot;;i:32;s:1:&quot;b&quot;;s:18:&quot;download order pdf&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:32;a:4:{s:1:&quot;a&quot;;i:33;s:1:&quot;b&quot;;s:13:&quot;view payments&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:33;a:4:{s:1:&quot;a&quot;;i:34;s:1:&quot;b&quot;;s:12:&quot;add payments&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:34;a:4:{s:1:&quot;a&quot;;i:35;s:1:&quot;b&quot;;s:15:&quot;delete payments&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:35;a:4:{s:1:&quot;a&quot;;i:36;s:1:&quot;b&quot;;s:15:&quot;export payments&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:36;a:4:{s:1:&quot;a&quot;;i:37;s:1:&quot;b&quot;;s:13:&quot;view expenses&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:37;a:4:{s:1:&quot;a&quot;;i:38;s:1:&quot;b&quot;;s:15:&quot;create expenses&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:38;a:4:{s:1:&quot;a&quot;;i:39;s:1:&quot;b&quot;;s:13:&quot;edit expenses&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:39;a:4:{s:1:&quot;a&quot;;i:40;s:1:&quot;b&quot;;s:15:&quot;delete expenses&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:40;a:4:{s:1:&quot;a&quot;;i:41;s:1:&quot;b&quot;;s:15:&quot;export expenses&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:41;a:4:{s:1:&quot;a&quot;;i:42;s:1:&quot;b&quot;;s:13:&quot;view products&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:42;a:4:{s:1:&quot;a&quot;;i:43;s:1:&quot;b&quot;;s:15:&quot;create products&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:43;a:4:{s:1:&quot;a&quot;;i:44;s:1:&quot;b&quot;;s:13:&quot;edit products&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:44;a:4:{s:1:&quot;a&quot;;i:45;s:1:&quot;b&quot;;s:15:&quot;delete products&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:45;a:4:{s:1:&quot;a&quot;;i:46;s:1:&quot;b&quot;;s:12:&quot;view reports&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:2:{i:0;i:1;i:1;i:2;}}i:46;a:4:{s:1:&quot;a&quot;;i:47;s:1:&quot;b&quot;;s:14:&quot;export reports&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:47;a:4:{s:1:&quot;a&quot;;i:48;s:1:&quot;b&quot;;s:15:&quot;manage settings&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:48;a:4:{s:1:&quot;a&quot;;i:49;s:1:&quot;b&quot;;s:19:&quot;manage integrations&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}i:49;a:4:{s:1:&quot;a&quot;;i:50;s:1:&quot;b&quot;;s:12:&quot;manage roles&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;s:1:&quot;r&quot;;a:1:{i:0;i:1;}}}s:5:&quot;roles&quot;;a:3:{i:0;a:3:{s:1:&quot;a&quot;;i:1;s:1:&quot;b&quot;;s:11:&quot;Super Admin&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;}i:1;a:3:{s:1:&quot;a&quot;;i:2;s:1:&quot;b&quot;;s:5:&quot;Staff&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;}i:2;a:3:{s:1:&quot;a&quot;;i:3;s:1:&quot;b&quot;;s:3:&quot;DOP&quot;;s:1:&quot;c&quot;;s:3:&quot;web&quot;;}}}</column>
+            <column name="expiration">1772090761</column>
+        </table>
+        <!-- Table cache_locks -->
+        <!-- Table customers -->
+        <table name="customers">
+            <column name="id">3</column>
+            <column name="name">HV InfoTech</column>
+            <column name="email">hardik@hvinfotech.com</column>
+            <column name="website">https://www.hvinfotech.com</column>
+            <column name="gst_number">NULL</column>
+            <column name="address_line1">C/307 Ganesh Meridian</column>
+            <column name="address_line2">S G Highway, Sola</column>
+            <column name="city">Ahmedabad</column>
+            <column name="state">Gujarat</column>
+            <column name="pincode">380060</column>
+            <column name="country">India</column>
+            <column name="photo">NULL</column>
+            <column name="status">1</column>
+            <column name="mobile">9825782782</column>
+            <column name="business_name">Hardik Vyas</column>
+            <column name="remarks">Product Sales Video Recording</column>
+            <column name="password">NULL</column>
+            <column name="created_at">2026-02-24 14:47:38</column>
+            <column name="updated_at">2026-02-24 14:47:38</column>
+        </table>
+        <table name="customers">
+            <column name="id">4</column>
+            <column name="name">Nishit Patel</column>
+            <column name="email">nishit@npinfotech.com</column>
+            <column name="website">https://www.noinfotech.com</column>
+            <column name="gst_number">NULL</column>
+            <column name="address_line1">C/307 Ganesh Meridian</column>
+            <column name="address_line2">S G Highway, Sola</column>
+            <column name="city">Ahmedabad</column>
+            <column name="state">Gujarat</column>
+            <column name="pincode">380060</column>
+            <column name="country">India</column>
+            <column name="photo">NULL</column>
+            <column name="status">1</column>
+            <column name="mobile">9824655419</column>
+            <column name="business_name">NP InfoTech</column>
+            <column name="remarks">CRM product sales video creation</column>
+            <column name="password">NULL</column>
+            <column name="created_at">2026-02-24 14:49:33</column>
+            <column name="updated_at">2026-02-24 14:49:33</column>
+        </table>
+        <!-- Table expenses -->
+        <!-- Table failed_jobs -->
+        <!-- Table inquiries -->
+        <!-- Table inquiry_items -->
+        <!-- Table inquiry_logs -->
+        <!-- Table integrations -->
+        <!-- Table jobs -->
+        <!-- Table job_batches -->
+        <!-- Table lead_sources -->
+        <table name="lead_sources">
+            <column name="id">1</column>
+            <column name="name">Google Search</column>
+            <column name="status">1</column>
+            <column name="created_at">2026-02-13 18:19:13</column>
+            <column name="updated_at">2026-02-13 18:19:13</column>
+        </table>
+        <table name="lead_sources">
+            <column name="id">2</column>
+            <column name="name">Facebook</column>
+            <column name="status">1</column>
+            <column name="created_at">2026-02-13 18:19:13</column>
+            <column name="updated_at">2026-02-13 18:19:13</column>
+        </table>
+        <table name="lead_sources">
+            <column name="id">3</column>
+            <column name="name">Instagram</column>
+            <column name="status">1</column>
+            <column name="created_at">2026-02-13 18:19:13</column>
+            <column name="updated_at">2026-02-13 18:19:13</column>
+        </table>
+        <table name="lead_sources">
+            <column name="id">4</column>
+            <column name="name">Reference / Referral</column>
+            <column name="status">1</column>
+            <column name="created_at">2026-02-13 18:19:13</column>
+            <column name="updated_at">2026-02-13 18:19:13</column>
+        </table>
+        <table name="lead_sources">
+            <column name="id">5</column>
+            <column name="name">Walk-in</column>
+            <column name="status">1</column>
+            <column name="created_at">2026-02-13 18:19:13</column>
+            <column name="updated_at">2026-02-13 18:19:13</column>
+        </table>
+        <table name="lead_sources">
+            <column name="id">6</column>
+            <column name="name">Website</column>
+            <column name="status">1</column>
+            <column name="created_at">2026-02-13 18:19:13</column>
+            <column name="updated_at">2026-02-13 18:19:13</column>
+        </table>
+        <table name="lead_sources">
+            <column name="id">7</column>
+            <column name="name">Other</column>
+            <column name="status">1</column>
+            <column name="created_at">2026-02-13 18:19:13</column>
+            <column name="updated_at">2026-02-13 18:19:13</column>
+        </table>
+        <!-- Table migrations -->
+        <table name="migrations">
+            <column name="id">1</column>
+            <column name="migration">0001_01_01_000000_create_users_table</column>
+            <column name="batch">1</column>
+        </table>
+        <table name="migrations">
+            <column name="id">2</column>
+            <column name="migration">0001_01_01_000001_create_cache_table</column>
+            <column name="batch">1</column>
+        </table>
+        <table name="migrations">
+            <column name="id">3</column>
+            <column name="migration">0001_01_01_000002_create_jobs_table</column>
+            <column name="batch">1</column>
+        </table>
+        <table name="migrations">
+            <column name="id">4</column>
+            <column name="migration">2024_03_01_000000_add_photo_to_users_table</column>
+            <column name="batch">1</column>
+        </table>
+        <table name="migrations">
+            <column name="id">5</column>
+            <column name="migration">2026_02_09_153653_create_crm_tables</column>
+            <column name="batch">1</column>
+        </table>
+        <table name="migrations">
+            <column name="id">6</column>
+            <column name="migration">2026_02_10_152234_add_status_to_customers_table</column>
+            <column name="batch">1</column>
+        </table>
+        <table name="migrations">
+            <column name="id">7</column>
+            <column name="migration">2026_02_10_160714_create_inquiries_table</column>
+            <column name="batch">1</column>
+        </table>
+        <table name="migrations">
+            <column name="id">8</column>
+            <column name="migration">2026_02_10_165109_add_columns_to_customers_table</column>
+            <column name="batch">2</column>
+        </table>
+        <table name="migrations">
+            <column name="id">9</column>
+            <column name="migration">2026_02_10_190632_add_status_and_logs_to_inquiries</column>
+            <column name="batch">3</column>
+        </table>
+        <table name="migrations">
+            <column name="id">10</column>
+            <column name="migration">2026_02_13_200454_add_profile_fields_to_customers_table</column>
+            <column name="batch">4</column>
+        </table>
+        <table name="migrations">
+            <column name="id">11</column>
+            <column name="migration">2026_02_15_091137_create_product_service_tables</column>
+            <column name="batch">5</column>
+        </table>
+        <table name="migrations">
+            <column name="id">12</column>
+            <column name="migration">2026_02_15_140624_add_gst_columns_to_tables</column>
+            <column name="batch">6</column>
+        </table>
+        <table name="migrations">
+            <column name="id">13</column>
+            <column name="migration">2026_02_15_144851_add_gst_to_order_items</column>
+            <column name="batch">7</column>
+        </table>
+        <table name="migrations">
+            <column name="id">14</column>
+            <column name="migration">2026_02_15_170455_create_settings_table</column>
+            <column name="batch">8</column>
+        </table>
+        <table name="migrations">
+            <column name="id">15</column>
+            <column name="migration">2026_02_16_135230_create_integrations_table</column>
+            <column name="batch">9</column>
+        </table>
+        <table name="migrations">
+            <column name="id">17</column>
+            <column name="migration">2026_02_18_000000_create_expenses_table</column>
+            <column name="batch">10</column>
+        </table>
+        <table name="migrations">
+            <column name="id">18</column>
+            <column name="migration">2026_02_22_161102_create_permission_tables</column>
+            <column name="batch">11</column>
+        </table>
+        <!-- Table model_has_permissions -->
+        <!-- Table model_has_roles -->
+        <table name="model_has_roles">
+            <column name="role_id">1</column>
+            <column name="model_type">App\Models\User</column>
+            <column name="model_id">1</column>
+        </table>
+        <table name="model_has_roles">
+            <column name="role_id">3</column>
+            <column name="model_type">App\Models\User</column>
+            <column name="model_id">2</column>
+        </table>
+        <!-- Table orders -->
+        <!-- Table order_items -->
+        <!-- Table password_reset_tokens -->
+        <!-- Table payments -->
+        <!-- Table permissions -->
+        <table name="permissions">
+            <column name="id">1</column>
+            <column name="name">view dashboard</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:51</column>
+            <column name="updated_at">2026-02-22 16:14:51</column>
+        </table>
+        <table name="permissions">
+            <column name="id">2</column>
+            <column name="name">view customers</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:51</column>
+            <column name="updated_at">2026-02-22 16:14:51</column>
+        </table>
+        <table name="permissions">
+            <column name="id">3</column>
+            <column name="name">create customers</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:51</column>
+            <column name="updated_at">2026-02-22 16:14:51</column>
+        </table>
+        <table name="permissions">
+            <column name="id">4</column>
+            <column name="name">edit customers</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:51</column>
+            <column name="updated_at">2026-02-22 16:14:51</column>
+        </table>
+        <table name="permissions">
+            <column name="id">5</column>
+            <column name="name">delete customers</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:51</column>
+            <column name="updated_at">2026-02-22 16:14:51</column>
+        </table>
+        <table name="permissions">
+            <column name="id">6</column>
+            <column name="name">export customers</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:51</column>
+            <column name="updated_at">2026-02-22 16:14:51</column>
+        </table>
+        <table name="permissions">
+            <column name="id">7</column>
+            <column name="name">toggle customer status</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">8</column>
+            <column name="name">view staff</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">9</column>
+            <column name="name">create staff</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">10</column>
+            <column name="name">edit staff</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">11</column>
+            <column name="name">delete staff</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">12</column>
+            <column name="name">export staff</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">13</column>
+            <column name="name">toggle staff status</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">14</column>
+            <column name="name">view inquiries</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">15</column>
+            <column name="name">create inquiries</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">16</column>
+            <column name="name">edit inquiries</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">17</column>
+            <column name="name">delete inquiries</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">18</column>
+            <column name="name">export inquiries</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">19</column>
+            <column name="name">manage inquiry logs</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">20</column>
+            <column name="name">convert inquiries</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">21</column>
+            <column name="name">view bookings</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">22</column>
+            <column name="name">create bookings</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">23</column>
+            <column name="name">edit bookings</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">24</column>
+            <column name="name">delete bookings</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">25</column>
+            <column name="name">export bookings</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">26</column>
+            <column name="name">view booking calendar</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">27</column>
+            <column name="name">view orders</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">28</column>
+            <column name="name">create orders</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">29</column>
+            <column name="name">edit orders</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">30</column>
+            <column name="name">delete orders</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">31</column>
+            <column name="name">export orders</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">32</column>
+            <column name="name">download order pdf</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">33</column>
+            <column name="name">view payments</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">34</column>
+            <column name="name">add payments</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">35</column>
+            <column name="name">delete payments</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">36</column>
+            <column name="name">export payments</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">37</column>
+            <column name="name">view expenses</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">38</column>
+            <column name="name">create expenses</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">39</column>
+            <column name="name">edit expenses</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">40</column>
+            <column name="name">delete expenses</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">41</column>
+            <column name="name">export expenses</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">42</column>
+            <column name="name">view products</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">43</column>
+            <column name="name">create products</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">44</column>
+            <column name="name">edit products</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">45</column>
+            <column name="name">delete products</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">46</column>
+            <column name="name">view reports</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">47</column>
+            <column name="name">export reports</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">48</column>
+            <column name="name">manage settings</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">49</column>
+            <column name="name">manage integrations</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="permissions">
+            <column name="id">50</column>
+            <column name="name">manage roles</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <!-- Table product_services -->
+        <table name="product_services">
+            <column name="id">1</column>
+            <column name="name">Studio Rental</column>
+            <column name="type">Service</column>
+            <column name="pricing_model">Hourly</column>
+            <column name="price">1500.00</column>
+            <column name="gst_rate">18.00</column>
+            <column name="description">NULL</column>
+            <column name="is_active">1</column>
+            <column name="created_at">2026-02-15 09:54:25</column>
+            <column name="updated_at">2026-02-15 14:33:13</column>
+        </table>
+        <table name="product_services">
+            <column name="id">3</column>
+            <column name="name">Recording Camera</column>
+            <column name="type">Product</column>
+            <column name="pricing_model">Hourly</column>
+            <column name="price">250.00</column>
+            <column name="gst_rate">18.00</column>
+            <column name="description">NULL</column>
+            <column name="is_active">1</column>
+            <column name="created_at">2026-02-15 09:55:23</column>
+            <column name="updated_at">2026-02-15 14:32:56</column>
+        </table>
+        <table name="product_services">
+            <column name="id">4</column>
+            <column name="name">Recording Camera Stand</column>
+            <column name="type">Product</column>
+            <column name="pricing_model">Fixed</column>
+            <column name="price">100.00</column>
+            <column name="gst_rate">18.00</column>
+            <column name="description">NULL</column>
+            <column name="is_active">1</column>
+            <column name="created_at">2026-02-15 09:55:48</column>
+            <column name="updated_at">2026-02-15 14:33:05</column>
+        </table>
+        <table name="product_services">
+            <column name="id">5</column>
+            <column name="name">Professional Recording Service</column>
+            <column name="type">Service</column>
+            <column name="pricing_model">Hourly</column>
+            <column name="price">500.00</column>
+            <column name="gst_rate">18.00</column>
+            <column name="description">NULL</column>
+            <column name="is_active">1</column>
+            <column name="created_at">2026-02-15 09:56:13</column>
+            <column name="updated_at">2026-02-15 14:32:46</column>
+        </table>
+        <table name="product_services">
+            <column name="id">6</column>
+            <column name="name">Tea / Coffee</column>
+            <column name="type">Product</column>
+            <column name="pricing_model">Per Unit</column>
+            <column name="price">20.00</column>
+            <column name="gst_rate">18.00</column>
+            <column name="description">NULL</column>
+            <column name="is_active">1</column>
+            <column name="created_at">2026-02-15 09:56:53</column>
+            <column name="updated_at">2026-02-15 14:33:24</column>
+        </table>
+        <table name="product_services">
+            <column name="id">7</column>
+            <column name="name">Mineral Water - 1 Ltr</column>
+            <column name="type">Product</column>
+            <column name="pricing_model">Per Unit</column>
+            <column name="price">30.00</column>
+            <column name="gst_rate">18.00</column>
+            <column name="description">NULL</column>
+            <column name="is_active">1</column>
+            <column name="created_at">2026-02-15 09:57:18</column>
+            <column name="updated_at">2026-02-15 14:32:36</column>
+        </table>
+        <!-- Table product_service_tables -->
+        <!-- Table roles -->
+        <table name="roles">
+            <column name="id">1</column>
+            <column name="name">Super Admin</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 16:14:52</column>
+            <column name="updated_at">2026-02-22 16:14:52</column>
+        </table>
+        <table name="roles">
+            <column name="id">2</column>
+            <column name="name">Staff</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-22 18:38:23</column>
+            <column name="updated_at">2026-02-22 18:38:23</column>
+        </table>
+        <table name="roles">
+            <column name="id">3</column>
+            <column name="name">DOP</column>
+            <column name="guard_name">web</column>
+            <column name="created_at">2026-02-24 07:14:43</column>
+            <column name="updated_at">2026-02-24 07:14:43</column>
+        </table>
+        <!-- Table role_has_permissions -->
+        <table name="role_has_permissions">
+            <column name="permission_id">1</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">2</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">3</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">4</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">5</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">6</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">7</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">8</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">9</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">10</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">11</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">12</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">13</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">14</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">15</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">16</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">17</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">18</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">19</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">20</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">21</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">22</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">23</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">24</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">25</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">26</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">27</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">28</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">29</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">30</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">31</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">32</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">33</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">34</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">35</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">36</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">37</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">38</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">39</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">40</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">41</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">42</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">43</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">44</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">45</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">46</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">47</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">48</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">49</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">50</column>
+            <column name="role_id">1</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">1</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">2</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">3</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">4</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">5</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">7</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">8</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">14</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">15</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">16</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">17</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">19</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">20</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">21</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">22</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">23</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">24</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">26</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">27</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">28</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">29</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">30</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">32</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">33</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">34</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">35</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">37</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">38</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">39</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">40</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">42</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">46</column>
+            <column name="role_id">2</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">21</column>
+            <column name="role_id">3</column>
+        </table>
+        <table name="role_has_permissions">
+            <column name="permission_id">26</column>
+            <column name="role_id">3</column>
+        </table>
+        <!-- Table services -->
+        <!-- Table sessions -->
+        <!-- Table settings -->
+        <table name="settings">
+            <column name="id">1</column>
+            <column name="key">company_logo</column>
+            <column name="value">logos/z9u8NS3zoEik6LZXiuxGBVmsG5Zb36Wl0zFEgkCz.png</column>
+            <column name="created_at">2026-02-15 17:31:59</column>
+            <column name="updated_at">2026-02-15 17:31:59</column>
+        </table>
+        <table name="settings">
+            <column name="id">2</column>
+            <column name="key">company_name</column>
+            <column name="value">AddFrame Studio</column>
+            <column name="created_at">2026-02-15 17:31:59</column>
+            <column name="updated_at">2026-02-15 17:38:11</column>
+        </table>
+        <table name="settings">
+            <column name="id">3</column>
+            <column name="key">company_address</column>
+            <column name="value">C/307 Ganesh Meridian,
+S G Highway, Sola, Ahmedabad 380060.</column>
+            <column name="created_at">2026-02-15 17:31:59</column>
+            <column name="updated_at">2026-02-15 17:43:30</column>
+        </table>
+        <table name="settings">
+            <column name="id">4</column>
+            <column name="key">company_email</column>
+            <column name="value">info@addframestudio.com</column>
+            <column name="created_at">2026-02-15 17:31:59</column>
+            <column name="updated_at">2026-02-15 17:38:11</column>
+        </table>
+        <table name="settings">
+            <column name="id">5</column>
+            <column name="key">company_phone</column>
+            <column name="value">+91 98989 89898</column>
+            <column name="created_at">2026-02-15 17:31:59</column>
+            <column name="updated_at">2026-02-15 17:38:11</column>
+        </table>
+        <table name="settings">
+            <column name="id">6</column>
+            <column name="key">company_website</column>
+            <column name="value">https://www.addframestudio.com</column>
+            <column name="created_at">2026-02-15 17:31:59</column>
+            <column name="updated_at">2026-02-15 17:38:11</column>
+        </table>
+        <table name="settings">
+            <column name="id">7</column>
+            <column name="key">invoice_prefix</column>
+            <column name="value">INV-</column>
+            <column name="created_at">2026-02-15 17:31:59</column>
+            <column name="updated_at">2026-02-15 17:31:59</column>
+        </table>
+        <table name="settings">
+            <column name="id">8</column>
+            <column name="key">invoice_footer_text</column>
+            <column name="value">Thank you for your business.</column>
+            <column name="created_at">2026-02-15 17:31:59</column>
+            <column name="updated_at">2026-02-15 17:38:11</column>
+        </table>
+        <table name="settings">
+            <column name="id">9</column>
+            <column name="key">default_invoice_notes</column>
+            <column name="value">- Terms &amp; Conditions apply.
+- Subject to Ahmedabad jurisdictions.</column>
+            <column name="created_at">2026-02-15 17:31:59</column>
+            <column name="updated_at">2026-02-15 17:38:11</column>
+        </table>
+        <table name="settings">
+            <column name="id">10</column>
+            <column name="key">meta_app_id</column>
+            <column name="value">NULL</column>
+            <column name="created_at">2026-02-17 07:07:08</column>
+            <column name="updated_at">2026-02-24 07:20:30</column>
+        </table>
+        <table name="settings">
+            <column name="id">11</column>
+            <column name="key">meta_app_secret</column>
+            <column name="value">NULL</column>
+            <column name="created_at">2026-02-17 07:07:08</column>
+            <column name="updated_at">2026-02-24 07:20:30</column>
+        </table>
+        <!-- Table users -->
+        <table name="users">
+            <column name="id">1</column>
+            <column name="role">admin</column>
+            <column name="name">Super Admin</column>
+            <column name="email">admin@gmail.com</column>
+            <column name="status">1</column>
+            <column name="photo">NULL</column>
+            <column name="mobile">9876543210</column>
+            <column name="email_verified_at">NULL</column>
+            <column name="password">$2y$12$Iv340eIWRffzlGL7.5bxsuXWo7sB0QlbUkaXIg4Nz0y.EM/Iu/Nne</column>
+            <column name="remember_token">NULL</column>
+            <column name="created_at">2026-02-10 16:43:01</column>
+            <column name="updated_at">2026-02-10 16:43:01</column>
+        </table>
+        <table name="users">
+            <column name="id">2</column>
+            <column name="role">staff</column>
+            <column name="name">Nishit Patel</column>
+            <column name="email">nishit@techcelerity.com</column>
+            <column name="status">1</column>
+            <column name="photo">1770742149_ChatGPT Image Nov 12, 2025, 04_47_29 PM.png</column>
+            <column name="mobile">9714033266</column>
+            <column name="email_verified_at">NULL</column>
+            <column name="password">$2y$12$okDj0.iyyaE1VEdoSmJLBe8.yLYxfPxAqde7ycXvdJFJ7aM9juz2K</column>
+            <column name="remember_token">DPb62eboo1QgCG4wVvHrqYJZHkXmj6K5fYUSFr7nC7nUPMayRaLum0tKmeaZ</column>
+            <column name="created_at">2026-02-10 16:49:09</column>
+            <column name="updated_at">2026-02-23 06:37:19</column>
+        </table>
+    </database>
+</pma_xml_export>

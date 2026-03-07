@@ -1,0 +1,212 @@
+@extends('layouts.app')
+@section('header', 'Executive Dashboard')
+
+@section('content')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    
+    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between hover:shadow-md transition">
+        <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Revenue (This Month)</p>
+            <h3 class="text-2xl font-bold text-slate-800 mt-1">₹{{ number_format($monthRevenue) }}</h3>
+            
+            <div class="flex items-center gap-1 mt-2 text-xs font-bold">
+                @if($trends['revenue'] >= 0)
+                    <span class="text-green-600 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-1 border border-green-100">
+                        <i class="fas fa-arrow-up"></i> {{ number_format($trends['revenue'], 1) }}%
+                    </span>
+                @else
+                    <span class="text-red-600 bg-red-50 px-1.5 py-0.5 rounded flex items-center gap-1 border border-red-100">
+                        <i class="fas fa-arrow-down"></i> {{ number_format(abs($trends['revenue']), 1) }}%
+                    </span>
+                @endif
+                <span class="text-gray-400 font-medium ml-1">vs last month</span>
+            </div>
+        </div>
+        <div class="h-12 w-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xl">
+            <i class="fas fa-coins"></i>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between hover:shadow-md transition">
+        <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Expenses (This Month)</p>
+            <h3 class="text-2xl font-bold text-slate-800 mt-1">₹{{ number_format($monthExpense) }}</h3>
+            
+            <div class="flex items-center gap-1 mt-2 text-xs font-bold">
+                @if($trends['expense'] > 0)
+                    <span class="text-red-600 bg-red-50 px-1.5 py-0.5 rounded flex items-center gap-1 border border-red-100">
+                        <i class="fas fa-arrow-up"></i> {{ number_format($trends['expense'], 1) }}%
+                    </span>
+                @else
+                    <span class="text-green-600 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-1 border border-green-100">
+                        <i class="fas fa-arrow-down"></i> {{ number_format(abs($trends['expense']), 1) }}%
+                    </span>
+                @endif
+                <span class="text-gray-400 font-medium ml-1">vs last month</span>
+            </div>
+        </div>
+        <div class="h-12 w-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center text-xl">
+            <i class="fas fa-wallet"></i>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between hover:shadow-md transition">
+        <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Net Profit (This Month)</p>
+            <h3 class="text-2xl font-bold {{ $monthProfit >= 0 ? 'text-blue-600' : 'text-red-600' }} mt-1">
+                ₹{{ number_format($monthProfit) }}
+            </h3>
+            
+            <div class="flex items-center gap-1 mt-2 text-xs font-bold">
+                @if($trends['profit'] >= 0)
+                    <span class="text-green-600 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-1 border border-green-100">
+                        <i class="fas fa-arrow-up"></i> {{ number_format($trends['profit'], 1) }}%
+                    </span>
+                @else
+                    <span class="text-red-600 bg-red-50 px-1.5 py-0.5 rounded flex items-center gap-1 border border-red-100">
+                        <i class="fas fa-arrow-down"></i> {{ number_format(abs($trends['profit']), 1) }}%
+                    </span>
+                @endif
+                <span class="text-gray-400 font-medium ml-1">vs last month</span>
+            </div>
+        </div>
+        <div class="h-12 w-12 rounded-full {{ $monthProfit >= 0 ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600' }} flex items-center justify-center text-xl">
+            <i class="fas fa-chart-line"></i>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+    
+    <div class="xl:col-span-2 space-y-6">
+        
+        <x-card>
+            <x-slot name="title">
+                <div class="flex items-center gap-2">
+                    <div class="bg-blue-100 text-blue-600 p-1.5 rounded-lg"><i class="fas fa-calendar-day"></i></div>
+                    <span>Today's Pulse</span>
+                </div>
+            </x-slot>
+            
+            <x-slot name="action">
+                <span class="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded border border-gray-200 uppercase">
+                    {{ \Carbon\Carbon::today()->format('d M, Y') }}
+                </span>
+            </x-slot>
+
+            <div class="p-4">
+                @forelse($todaysSchedule as $booking)
+                <div class="flex items-center gap-4 p-3 mb-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-blue-200 transition group relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 {{ $booking->status == 'Completed' ? 'bg-green-500' : 'bg-blue-500' }}"></div>
+                    
+                    <div class="pl-2 w-16 text-center border-r border-gray-200">
+                        <span class="block text-sm font-bold text-slate-800">{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }}</span>
+                        <span class="block text-[10px] text-gray-400 uppercase">Start</span>
+                    </div>
+
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">{{ $booking->customer->name }}</h4>
+                                <p class="text-xs text-blue-600 font-medium mt-0.5">
+                                    <i class="fas fa-concierge-bell mr-1"></i> {{ $booking->service_name ?? 'Service' }}
+                                </p>
+                            </div>
+                            <a href="{{ route('bookings.show', $booking->id) }}" class="text-xs font-bold text-gray-400 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition">
+                                View <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    @if($booking->assignedStaff)
+                    <div class="flex flex-col items-end min-w-[80px]">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] text-gray-500 font-bold uppercase">Staff</span>
+                            <div class="h-5 w-5 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[9px] font-bold text-gray-700">
+                                {{ substr($booking->assignedStaff->name, 0, 1) }}
+                            </div>
+                        </div>
+                        <span class="text-xs text-gray-600 mt-0.5">{{ explode(' ', $booking->assignedStaff->name)[0] }}</span>
+                    </div>
+                    @endif
+                </div>
+                @empty
+                <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+                    <div class="bg-gray-50 p-4 rounded-full mb-3">
+                        <i class="far fa-calendar-check text-2xl text-gray-300"></i>
+                    </div>
+                    <p class="text-sm">No bookings scheduled for today.</p>
+                    <a href="{{ route('bookings.create') }}" class="mt-4 text-blue-600 font-bold text-xs hover:underline">Schedule One Now</a>
+                </div>
+                @endforelse
+            </div>
+        </x-card>
+    </div>
+
+    <div class="space-y-6">
+        
+        <x-card title="Lead Pipeline (Month)">
+            <div class="p-5">
+                <div id="pipelineChart" class="flex justify-center -ml-2"></div>
+            </div>
+        </x-card>
+
+        <x-card title="Fresh Inquiries">
+            <x-slot name="action">
+                <a href="{{ route('inquiries.index') }}" class="text-[10px] font-bold text-blue-600 hover:underline uppercase tracking-wide">View All</a>
+            </x-slot>
+
+            <div class="divide-y divide-gray-50">
+                @forelse($recentInquiries as $inquiry)
+                <a href="{{ route('inquiries.show', $inquiry->id) }}" class="flex items-center justify-between p-4 hover:bg-blue-50 transition group">
+                    <div>
+                        <div class="font-bold text-xs text-slate-700">{{ $inquiry->customer->name }}</div>
+                        <div class="text-[10px] text-gray-400 mt-0.5">{{ $inquiry->created_at->diffForHumans() }}</div>
+                    </div>
+                    <x-badge :status="$inquiry->status" />
+                </a>
+                @empty
+                <div class="p-6 text-center text-xs text-gray-400">No new inquiries.</div>
+                @endforelse
+            </div>
+        </x-card>
+
+        <a href="{{ route('inquiries.create') }}" class="block w-full py-3 rounded-xl border border-dashed border-gray-300 text-center text-sm font-bold text-gray-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition">
+            <i class="fas fa-plus mr-1"></i> Add New Inquiry
+        </a>
+
+    </div>
+</div>
+
+<script>
+    var pipelineOptions = {
+        series: @json(array_values($funnelData)),
+        labels: @json(array_keys($funnelData)),
+        chart: { type: 'donut', height: 220, fontFamily: 'Satoshi, sans-serif' },
+        colors: ['#3b82f6', '#f59e0b', '#8b5cf6', '#10b981', '#ef4444'],
+        legend: { position: 'bottom', fontSize: '11px', markers: { width: 8, height: 8 } },
+        dataLabels: { enabled: false },
+        plotOptions: { 
+            pie: { 
+                donut: { 
+                    size: '70%',
+                    labels: {
+                        show: true,
+                        total: {
+                            show: true,
+                            label: 'Total',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            color: '#64748b'
+                        }
+                    }
+                } 
+            } 
+        },
+        stroke: { show: false }
+    };
+    new ApexCharts(document.querySelector("#pipelineChart"), pipelineOptions).render();
+</script>
+@endsection

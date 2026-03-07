@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio CRM</title>
+
+    <link rel="manifest" href="{{ asset('manifest.json') }}?v=2">
+    
+    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: dark)">
+    
+    <link rel="apple-touch-icon" href="{{ asset('icons/icon-192x192.png') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Studio CRM">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #f9fafb; }
+        [x-cloak] { display: none !important; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+
+<body class="text-gray-900" 
+      x-data="{ 
+          sidebarOpen: false,
+          toggleSidebar() { this.sidebarOpen = !this.sidebarOpen; },
+          
+          notify: { open: false, type: 'info', title: '', message: '' },
+          showNotify(type, title, message) {
+              this.notify = { open: true, type: type, title: title, message: message };
+              if(type === 'success') {
+                  setTimeout(() => { this.closeNotify() }, 3000);
+              }
+          },
+          closeNotify() { this.notify.open = false; },
+
+          confirm: { open: false, title: '', message: '', type: 'danger', action: null },
+          askConfirm(title, message, type, actionCallback) {
+              this.confirm = { open: true, title: title, message: message, type: type || 'danger', action: actionCallback };
+          },
+          closeConfirm() { this.confirm.open = false; },
+          performConfirm() {
+              if (this.confirm.action) { this.confirm.action(); }
+              this.closeConfirm();
+          }
+      }"
+      @notify.window="showNotify($event.detail.type, $event.detail.title, $event.detail.message)"
+      @confirm.window="askConfirm($event.detail.title, $event.detail.message, $event.detail.type, $event.detail.action)">
+
+    <div class="flex h-screen overflow-hidden">
+
+        <div x-show="sidebarOpen" x-transition.opacity @click="toggleSidebar()" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden" x-cloak></div>
+
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" 
+               class="fixed left-0 top-0 z-50 flex h-[100dvh] w-72 flex-col overflow-y-hidden bg-white border-r border-gray-200 duration-300 ease-linear lg:static lg:h-screen">
+            
+            <div class="flex items-center justify-between gap-2 px-6 h-16 border-b border-gray-100 shrink-0">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                    @php 
+                        $navLogo = \App\Models\Setting::get('company_logo'); 
+                        $navName = \App\Models\Setting::get('company_name', 'TC Studio');
+                    @endphp
+
+                    @if($navLogo)
+                        <img src="{{ asset('storage/' . $navLogo) }}" alt="{{ $navName }}" class="h-8 w-auto object-contain">
+                    @else
+                        <div class="bg-blue-600 text-white p-1.5 rounded-lg"><i class="fas fa-chart-pie text-base"></i></div>
+                        <span class="text-lg font-bold text-gray-900">{{ $navName }}</span>
+                    @endif
+                </a>
+                <button @click="toggleSidebar()" class="block lg:hidden text-gray-400 hover:text-gray-600 p-1"><i class="fas fa-times text-lg"></i></button>
+            </div>
+
+            <div class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar flex-1 py-4 px-4 pb-24"
+                 x-data="{ openUsers: true, openManagement: true, openReports: true, openSystem: true }">
+                
+                <div class="block sm:hidden mb-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100 shadow-sm">
+                    <form action="{{ route('locations.switch') }}" method="POST" id="locationSwitcherFormMobile" class="m-0">
+                        @csrf
+                        <label class="block text-[10px] font-bold text-blue-800 uppercase tracking-widest mb-1.5"><i class="fas fa-map-marker-alt mr-1 text-blue-500"></i> Active Location</label>
+                        <select name="location_id" class="bg-white border border-blue-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2 cursor-pointer font-semibold" onchange="document.getElementById('locationSwitcherFormMobile').submit();">
+                            @if(Auth::check())
+                                @if(Auth::user()->hasRole('Super Admin'))
+                                    <option value="all" {{ session('active_location_id') === 'all' ? 'selected' : '' }}>
+                                        🌐 All Locations (Global)
+                                    </option>
+                                @endif
+                                
+                                @php
+                                    $dropdownLocations = Auth::user()->hasRole('Super Admin') 
+                                        ? \App\Models\Location::where('is_active', true)->orderBy('name')->get() 
+                                        : Auth::user()->locations()->where('is_active', true)->orderBy('name')->get();
+                                @endphp
+
+                                @foreach($dropdownLocations as $loc)
+                                    <option value="{{ $loc->id }}" {{ session('active_location_id') == $loc->id ? 'selected' : '' }}>
+                                        📍 {{ $loc->name }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </form>
+                </div>
+
+                <ul class="flex flex-col gap-1">
+                    @can('view dashboard')
+                    <li>
+                        <a href="{{ route('dashboard') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <i class="fas fa-th-large w-6 text-center {{ request()->routeIs('dashboard') ? 'text-blue-600' : 'text-gray-400' }}"></i> Dashboard
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+
+                @canany(['view staff', 'view customers'])
+                <div class="mt-5 mb-2">
+                    <div @click="openUsers = !openUsers" class="flex items-center justify-between cursor-pointer text-gray-400 hover:text-gray-600 mb-2 px-3 text-[11px] font-bold uppercase tracking-widest">
+                        <span>USERS</span>
+                        <i class="fas fa-chevron-down text-[8px] transition-transform duration-200" :class="openUsers ? 'rotate-180' : ''"></i>
+                    </div>
+                    <ul x-show="openUsers" x-collapse class="flex flex-col gap-1">
+                        @can('view staff')
+                        <li>
+                            <a href="{{ route('staff.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('staff.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-user-shield w-6 text-center {{ request()->routeIs('staff.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Staff
+                            </a>
+                        </li>
+                        @endcan
+                        @can('view customers')
+                        <li>
+                            <a href="{{ route('customers.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('customers.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-users w-6 text-center {{ request()->routeIs('customers.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Customers
+                            </a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+                @endcanany
+
+                @canany(['view inquiries', 'view bookings', 'view booking calendar', 'view orders', 'view payments', 'view expenses', 'view products'])
+                <div class="mt-5 mb-2">
+                    <div @click="openManagement = !openManagement" class="flex items-center justify-between cursor-pointer text-gray-400 hover:text-gray-600 mb-2 px-3 text-[11px] font-bold uppercase tracking-widest">
+                        <span>MANAGEMENT</span>
+                        <i class="fas fa-chevron-down text-[8px] transition-transform duration-200" :class="openManagement ? 'rotate-180' : ''"></i>
+                    </div>
+                    <ul x-show="openManagement" x-collapse class="flex flex-col gap-1">
+                        @can('view inquiries')
+                        <li>
+                            <a href="{{ route('inquiries.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('inquiries.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-headset w-6 text-center {{ request()->routeIs('inquiries.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Inquiries
+                            </a>
+                        </li>
+                        @endcan
+                        @can('view bookings')
+                        <li>
+                            <a href="{{ route('bookings.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('bookings.index') || request()->routeIs('bookings.edit') || request()->routeIs('bookings.create') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-calendar-check w-6 text-center {{ request()->routeIs('bookings.index') || request()->routeIs('bookings.edit') || request()->routeIs('bookings.create') ? 'text-blue-600' : 'text-gray-400' }}"></i> Bookings
+                            </a>
+                        </li>
+                        @endcan
+                        @can('view booking calendar')
+                        <li>
+                            <a href="{{ route('bookings.calendar') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('bookings.calendar') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-calendar-alt w-6 text-center {{ request()->routeIs('bookings.calendar') ? 'text-blue-600' : 'text-gray-400' }}"></i> Booking Calendar
+                            </a>
+                        </li>
+                        @endcan
+                        @can('view orders')
+                        <li>
+                            <a href="{{ route('orders.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('orders.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-file-invoice-dollar w-6 text-center {{ request()->routeIs('orders.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Orders
+                            </a>
+                        </li>
+                        @endcan
+                        @can('view payments')
+                        <li>
+                            <a href="{{ route('payments.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('payments.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-money-bill-wave w-6 text-center {{ request()->routeIs('payments.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Payments
+                            </a>
+                        </li>
+                        @endcan
+                        @can('view expenses')
+                        <li>
+                            <a href="{{ route('expenses.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('expenses.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-wallet w-6 text-center {{ request()->routeIs('expenses.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Expenses
+                            </a>
+                        </li>
+                        @endcan
+                        @can('view products')
+                        <li>
+                            <a href="{{ route('product_services.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('product_services.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-box-open w-6 text-center {{ request()->routeIs('product_services.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Products & Services
+                            </a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+                @endcanany
+
+                @can('view reports')
+                <div class="mt-5 mb-2">
+                    <div @click="openReports = !openReports" class="flex items-center justify-between cursor-pointer text-gray-400 hover:text-gray-600 mb-2 px-3 text-[11px] font-bold uppercase tracking-widest">
+                        <span>REPORTS</span>
+                        <i class="fas fa-chevron-down text-[8px] transition-transform duration-200" :class="openReports ? 'rotate-180' : ''"></i>
+                    </div>
+                    <ul x-show="openReports" x-collapse class="flex flex-col gap-1">
+                        <li>
+                            <a href="{{ route('reports.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('reports.index') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-chart-pie w-6 text-center {{ request()->routeIs('reports.index') ? 'text-blue-600' : 'text-gray-400' }}"></i> Financial Reports
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('reports.growth') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('reports.growth') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-chart-line w-6 text-center {{ request()->routeIs('reports.growth') ? 'text-blue-600' : 'text-gray-400' }}"></i> Growth & Leads
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('reports.operations') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('reports.operations') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-clipboard-list w-6 text-center {{ request()->routeIs('reports.operations') ? 'text-blue-600' : 'text-gray-400' }}"></i> Operations & Bookings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                @endcan
+
+                @canany(['manage settings', 'manage roles', 'manage integrations'])
+                <div class="mt-5 mb-2">
+                    <div @click="openSystem = !openSystem" class="flex items-center justify-between cursor-pointer text-gray-400 hover:text-gray-600 mb-2 px-3 text-[11px] font-bold uppercase tracking-widest">
+                        <span>SYSTEM</span>
+                        <i class="fas fa-chevron-down text-[8px] transition-transform duration-200" :class="openSystem ? 'rotate-180' : ''"></i>
+                    </div>
+                    <ul x-show="openSystem" x-collapse class="flex flex-col gap-1">
+                        
+                        @can('manage settings')
+                        <li>
+                            <a href="{{ route('locations.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('locations.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-map-marked-alt w-6 text-center {{ request()->routeIs('locations.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Studio Locations
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('settings.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('settings.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-cog w-6 text-center {{ request()->routeIs('settings.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Settings
+                            </a>
+                        </li>
+                        @endcan
+
+                        @can('manage roles')
+                        <li>
+                            <a href="{{ route('roles.index') }}" class="relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-base duration-300 {{ request()->routeIs('roles.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <i class="fas fa-user-lock w-6 text-center {{ request()->routeIs('roles.*') ? 'text-blue-600' : 'text-gray-400' }}"></i> Roles & Permissions
+                            </a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+                @endcanany
+            </div>
+        </aside>
+
+        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-gray-50">
+            
+            <header class="sticky top-0 z-40 flex w-full bg-white drop-shadow-sm border-b border-gray-200">
+                <div class="flex flex-grow items-center justify-between px-4 py-3 md:px-6 2xl:px-11">
+                    
+                    <div class="flex items-center gap-4">
+                        <button class="block lg:hidden rounded-lg border border-gray-200 bg-gray-50 p-2 shadow-sm text-gray-600 hover:text-blue-600 transition" @click="toggleSidebar()">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <nav>
+                            <ol class="flex items-center gap-1.5 sm:gap-3">
+                                <li>
+                                    <a class="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 duration-300" href="{{ route('dashboard') }}">
+                                        <i class="fas fa-home"></i>
+                                        <span class="hidden sm:inline">Home</span>
+                                    </a>
+                                </li>
+                                @if(!request()->routeIs('dashboard'))
+                                    <li class="text-gray-400">
+                                        <i class="fas fa-chevron-right text-[10px]"></i>
+                                    </li>
+                                    <li>
+                                        <span class="text-sm font-bold text-blue-600">@yield('header', 'Page')</span>
+                                    </li>
+                                @endif
+                            </ol>
+                        </nav>
+                    </div>
+
+                    <div class="flex items-center gap-3 2xl:gap-7">
+                        
+                        <div class="hidden sm:flex items-center">
+                            <form action="{{ route('locations.switch') }}" method="POST" id="locationSwitcherForm" class="m-0">
+                                @csrf
+                                <select name="location_id" class="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-1.5 cursor-pointer font-semibold shadow-sm" onchange="document.getElementById('locationSwitcherForm').submit();">
+                                    @if(Auth::check())
+                                        @if(Auth::user()->hasRole('Super Admin'))
+                                            <option value="all" {{ session('active_location_id') === 'all' ? 'selected' : '' }}>
+                                                🌐 All Locations (Global)
+                                            </option>
+                                        @endif
+                                        
+                                        @php
+                                            $dropdownLocations = Auth::user()->hasRole('Super Admin') 
+                                                ? \App\Models\Location::where('is_active', true)->orderBy('name')->get() 
+                                                : Auth::user()->locations()->where('is_active', true)->orderBy('name')->get();
+                                        @endphp
+
+                                        @foreach($dropdownLocations as $loc)
+                                            <option value="{{ $loc->id }}" {{ session('active_location_id') == $loc->id ? 'selected' : '' }}>
+                                                📍 {{ $loc->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </form>
+                        </div>
+                        <ul class="flex items-center gap-2 2xl:gap-4">
+                            <li><a href="#" class="relative flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-gray-500 hover:text-blue-600 transition"><i class="far fa-bell"></i></a></li>
+                        </ul>
+
+                        <div class="relative" x-data="{ dropdownOpen: false }">
+                            <a class="flex items-center gap-3 cursor-pointer p-1 rounded-full hover:bg-gray-50 transition" @click="dropdownOpen = !dropdownOpen">
+                                <span class="hidden text-right lg:block">
+                                    <span class="block text-sm font-bold text-gray-900">{{ Auth::check() ? Auth::user()->name : 'Admin User' }}</span>
+                                    <span class="block text-xs font-medium text-gray-500">{{ Auth::check() ? (Auth::user()->roles->first()->name ?? 'Staff') : 'Administrator' }}</span>
+                                </span>
+                                <span class="h-10 w-10 rounded-full overflow-hidden border border-gray-200 shadow-sm">
+                                    <img src="https://ui-avatars.com/api/?name={{ Auth::check() ? urlencode(Auth::user()->name) : 'A+U' }}&background=2563eb&color=fff" alt="User" class="h-full w-full object-cover">
+                                </span>
+                                <i class="fas fa-chevron-down text-xs text-gray-400 hidden sm:block"></i>
+                            </a>
+                            
+                            <div x-show="dropdownOpen" x-transition @click.outside="dropdownOpen = false" class="absolute right-0 mt-3 flex w-56 flex-col rounded-xl border border-gray-200 bg-white shadow-xl z-50 overflow-hidden" x-cloak>
+                                
+                                <div class="block lg:hidden px-6 py-4 border-b border-gray-100 bg-gray-50">
+                                    <span class="block text-sm font-bold text-gray-900">{{ Auth::check() ? Auth::user()->name : 'Admin User' }}</span>
+                                    <span class="block text-xs font-medium text-gray-500">{{ Auth::check() ? (Auth::user()->roles->first()->name ?? 'Staff') : 'Administrator' }}</span>
+                                </div>
+
+                                <div class="py-2">
+                                    @can('manage settings')
+                                    <a href="{{ route('settings.index') }}" class="flex items-center gap-3 py-2.5 px-6 text-sm font-medium hover:text-blue-600 hover:bg-blue-50 text-gray-700 transition">
+                                        <i class="fas fa-cog w-4 text-center text-gray-400"></i> Settings
+                                    </a>
+                                    @endcan
+                                    
+                                    @can('manage roles')
+                                    <a href="{{ route('roles.index') }}" class="flex items-center gap-3 py-2.5 px-6 text-sm font-medium hover:text-blue-600 hover:bg-blue-50 text-gray-700 transition">
+                                        <i class="fas fa-user-lock w-4 text-center text-gray-400"></i> Roles & Permissions
+                                    </a>
+                                    @endcan
+
+                                    @canany(['manage settings', 'manage roles'])
+                                    <hr class="my-2 border-gray-100">
+                                    @endcanany
+
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button class="flex items-center gap-3 py-2.5 px-6 text-sm font-bold hover:text-red-600 hover:bg-red-50 w-full text-left text-gray-700 transition">
+                                            <i class="fas fa-sign-out-alt w-4 text-center text-red-400"></i> Log Out
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="p-4 md:p-6 2xl:p-10">
+                @yield('content')
+            </main>
+
+            <div x-show="notify.open" x-cloak class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                <div x-show="notify.open" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <div x-show="notify.open" class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
+                                    <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10"
+                                         :class="{ 'bg-green-100': notify.type === 'success', 'bg-red-100': notify.type === 'danger', 'bg-yellow-100': notify.type === 'warning', 'bg-blue-100': notify.type === 'info' }">
+                                        <i x-show="notify.type === 'success'" class="fas fa-check text-green-600"></i>
+                                        <i x-show="notify.type === 'danger'" class="fas fa-exclamation-triangle text-red-600"></i>
+                                        <i x-show="notify.type === 'warning'" class="fas fa-exclamation text-yellow-600"></i>
+                                        <i x-show="notify.type === 'info'" class="fas fa-info text-blue-600"></i>
+                                    </div>
+                                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                        <h3 class="text-base font-semibold text-gray-900" x-text="notify.title"></h3>
+                                        <p class="text-sm text-gray-500 mt-2" x-text="notify.message"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                <button type="button" @click="closeNotify()" class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-bold text-white shadow-sm sm:ml-3 sm:w-auto" :class="{ 'bg-green-600 hover:bg-green-500': notify.type === 'success', 'bg-red-600 hover:bg-red-500': notify.type === 'danger', 'bg-yellow-600 hover:bg-yellow-500': notify.type === 'warning', 'bg-blue-600 hover:bg-blue-700': notify.type === 'info' }">Okay, Got It</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="confirm.open" x-cloak class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                <div x-show="confirm.open" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <div x-show="confirm.open" class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
+                                    <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"><i class="fas fa-exclamation-triangle text-red-600"></i></div>
+                                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                        <h3 class="text-base font-semibold text-gray-900" x-text="confirm.title"></h3>
+                                        <p class="text-sm text-gray-500 mt-2" x-text="confirm.message"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+                                <button type="button" @click="performConfirm()" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-bold text-white hover:bg-red-500 sm:w-auto shadow-sm transition">Yes, Proceed</button>
+                                <button type="button" @click="closeConfirm()" class="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-bold text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:w-auto transition">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(formId, message = 'Are you sure you want to delete this record?') {
+            window.dispatchEvent(new CustomEvent('confirm', { detail: { title: 'Delete Confirmation', message: message, type: 'danger', action: () => document.getElementById(formId).submit() } }));
+        }
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+	@if(session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                window.dispatchEvent(new CustomEvent('notify', { detail: { type: 'success', title: 'Success', message: "{!! addslashes(session('success')) !!}" } }));
+            });
+        </script>
+    @endif
+
+    @if(session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                window.dispatchEvent(new CustomEvent('notify', { detail: { type: 'danger', title: 'Error', message: "{!! addslashes(session('error')) !!}" } }));
+            });
+        </script>
+    @endif
+</body>
+</html>

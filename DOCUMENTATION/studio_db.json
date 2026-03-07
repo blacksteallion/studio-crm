@@ -1,0 +1,328 @@
+[
+{"type":"header","version":"5.2.3","comment":"Export to JSON plugin for phpMyAdmin"},
+{"type":"database","name":"tcstudio"},
+{"type":"table","name":"bookings","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"booking_items","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"cache","database":"tcstudio","data":
+[
+{"key":"laravel-cache-spatie.permission.cache","value":"a:3:{s:5:\"alias\";a:4:{s:1:\"a\";s:2:\"id\";s:1:\"b\";s:4:\"name\";s:1:\"c\";s:10:\"guard_name\";s:1:\"r\";s:5:\"roles\";}s:11:\"permissions\";a:50:{i:0;a:4:{s:1:\"a\";i:1;s:1:\"b\";s:14:\"view dashboard\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:1;a:4:{s:1:\"a\";i:2;s:1:\"b\";s:14:\"view customers\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:2;a:4:{s:1:\"a\";i:3;s:1:\"b\";s:16:\"create customers\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:3;a:4:{s:1:\"a\";i:4;s:1:\"b\";s:14:\"edit customers\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:4;a:4:{s:1:\"a\";i:5;s:1:\"b\";s:16:\"delete customers\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:5;a:4:{s:1:\"a\";i:6;s:1:\"b\";s:16:\"export customers\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:6;a:4:{s:1:\"a\";i:7;s:1:\"b\";s:22:\"toggle customer status\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:7;a:4:{s:1:\"a\";i:8;s:1:\"b\";s:10:\"view staff\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:8;a:4:{s:1:\"a\";i:9;s:1:\"b\";s:12:\"create staff\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:9;a:4:{s:1:\"a\";i:10;s:1:\"b\";s:10:\"edit staff\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:10;a:4:{s:1:\"a\";i:11;s:1:\"b\";s:12:\"delete staff\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:11;a:4:{s:1:\"a\";i:12;s:1:\"b\";s:12:\"export staff\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:12;a:4:{s:1:\"a\";i:13;s:1:\"b\";s:19:\"toggle staff status\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:13;a:4:{s:1:\"a\";i:14;s:1:\"b\";s:14:\"view inquiries\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:14;a:4:{s:1:\"a\";i:15;s:1:\"b\";s:16:\"create inquiries\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:15;a:4:{s:1:\"a\";i:16;s:1:\"b\";s:14:\"edit inquiries\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:16;a:4:{s:1:\"a\";i:17;s:1:\"b\";s:16:\"delete inquiries\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:17;a:4:{s:1:\"a\";i:18;s:1:\"b\";s:16:\"export inquiries\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:18;a:4:{s:1:\"a\";i:19;s:1:\"b\";s:19:\"manage inquiry logs\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:19;a:4:{s:1:\"a\";i:20;s:1:\"b\";s:17:\"convert inquiries\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:20;a:4:{s:1:\"a\";i:21;s:1:\"b\";s:13:\"view bookings\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:21;a:4:{s:1:\"a\";i:22;s:1:\"b\";s:15:\"create bookings\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:22;a:4:{s:1:\"a\";i:23;s:1:\"b\";s:13:\"edit bookings\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:23;a:4:{s:1:\"a\";i:24;s:1:\"b\";s:15:\"delete bookings\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:24;a:4:{s:1:\"a\";i:25;s:1:\"b\";s:15:\"export bookings\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:25;a:4:{s:1:\"a\";i:26;s:1:\"b\";s:21:\"view booking calendar\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:26;a:4:{s:1:\"a\";i:27;s:1:\"b\";s:11:\"view orders\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:27;a:4:{s:1:\"a\";i:28;s:1:\"b\";s:13:\"create orders\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:28;a:4:{s:1:\"a\";i:29;s:1:\"b\";s:11:\"edit orders\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:29;a:4:{s:1:\"a\";i:30;s:1:\"b\";s:13:\"delete orders\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:30;a:4:{s:1:\"a\";i:31;s:1:\"b\";s:13:\"export orders\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:31;a:4:{s:1:\"a\";i:32;s:1:\"b\";s:18:\"download order pdf\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:32;a:4:{s:1:\"a\";i:33;s:1:\"b\";s:13:\"view payments\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:33;a:4:{s:1:\"a\";i:34;s:1:\"b\";s:12:\"add payments\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:34;a:4:{s:1:\"a\";i:35;s:1:\"b\";s:15:\"delete payments\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:35;a:4:{s:1:\"a\";i:36;s:1:\"b\";s:15:\"export payments\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:36;a:4:{s:1:\"a\";i:37;s:1:\"b\";s:13:\"view expenses\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:37;a:4:{s:1:\"a\";i:38;s:1:\"b\";s:15:\"create expenses\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:38;a:4:{s:1:\"a\";i:39;s:1:\"b\";s:13:\"edit expenses\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:39;a:4:{s:1:\"a\";i:40;s:1:\"b\";s:15:\"delete expenses\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:40;a:4:{s:1:\"a\";i:41;s:1:\"b\";s:15:\"export expenses\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:41;a:4:{s:1:\"a\";i:42;s:1:\"b\";s:13:\"view products\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:42;a:4:{s:1:\"a\";i:43;s:1:\"b\";s:15:\"create products\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:43;a:4:{s:1:\"a\";i:44;s:1:\"b\";s:13:\"edit products\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:44;a:4:{s:1:\"a\";i:45;s:1:\"b\";s:15:\"delete products\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:45;a:4:{s:1:\"a\";i:46;s:1:\"b\";s:12:\"view reports\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:46;a:4:{s:1:\"a\";i:47;s:1:\"b\";s:14:\"export reports\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:47;a:4:{s:1:\"a\";i:48;s:1:\"b\";s:15:\"manage settings\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:48;a:4:{s:1:\"a\";i:49;s:1:\"b\";s:19:\"manage integrations\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:49;a:4:{s:1:\"a\";i:50;s:1:\"b\";s:12:\"manage roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}}s:5:\"roles\";a:3:{i:0;a:3:{s:1:\"a\";i:1;s:1:\"b\";s:11:\"Super Admin\";s:1:\"c\";s:3:\"web\";}i:1;a:3:{s:1:\"a\";i:2;s:1:\"b\";s:5:\"Staff\";s:1:\"c\";s:3:\"web\";}i:2;a:3:{s:1:\"a\";i:3;s:1:\"b\";s:3:\"DOP\";s:1:\"c\";s:3:\"web\";}}}","expiration":"1772090761"}
+]
+}
+,{"type":"table","name":"cache_locks","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"customers","database":"tcstudio","data":
+[
+{"id":"3","name":"HV InfoTech","email":"hardik@hvinfotech.com","website":"https:\/\/www.hvinfotech.com","gst_number":null,"address_line1":"C\/307 Ganesh Meridian","address_line2":"S G Highway, Sola","city":"Ahmedabad","state":"Gujarat","pincode":"380060","country":"India","photo":null,"status":"1","mobile":"9825782782","business_name":"Hardik Vyas","remarks":"Product Sales Video Recording","password":null,"created_at":"2026-02-24 14:47:38","updated_at":"2026-02-24 14:47:38"},
+{"id":"4","name":"Nishit Patel","email":"nishit@npinfotech.com","website":"https:\/\/www.noinfotech.com","gst_number":null,"address_line1":"C\/307 Ganesh Meridian","address_line2":"S G Highway, Sola","city":"Ahmedabad","state":"Gujarat","pincode":"380060","country":"India","photo":null,"status":"1","mobile":"9824655419","business_name":"NP InfoTech","remarks":"CRM product sales video creation","password":null,"created_at":"2026-02-24 14:49:33","updated_at":"2026-02-24 14:49:33"}
+]
+}
+,{"type":"table","name":"expenses","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"failed_jobs","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"inquiries","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"inquiry_items","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"inquiry_logs","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"integrations","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"jobs","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"job_batches","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"lead_sources","database":"tcstudio","data":
+[
+{"id":"1","name":"Google Search","status":"1","created_at":"2026-02-13 18:19:13","updated_at":"2026-02-13 18:19:13"},
+{"id":"2","name":"Facebook","status":"1","created_at":"2026-02-13 18:19:13","updated_at":"2026-02-13 18:19:13"},
+{"id":"3","name":"Instagram","status":"1","created_at":"2026-02-13 18:19:13","updated_at":"2026-02-13 18:19:13"},
+{"id":"4","name":"Reference \/ Referral","status":"1","created_at":"2026-02-13 18:19:13","updated_at":"2026-02-13 18:19:13"},
+{"id":"5","name":"Walk-in","status":"1","created_at":"2026-02-13 18:19:13","updated_at":"2026-02-13 18:19:13"},
+{"id":"6","name":"Website","status":"1","created_at":"2026-02-13 18:19:13","updated_at":"2026-02-13 18:19:13"},
+{"id":"7","name":"Other","status":"1","created_at":"2026-02-13 18:19:13","updated_at":"2026-02-13 18:19:13"}
+]
+}
+,{"type":"table","name":"migrations","database":"tcstudio","data":
+[
+{"id":"1","migration":"0001_01_01_000000_create_users_table","batch":"1"},
+{"id":"2","migration":"0001_01_01_000001_create_cache_table","batch":"1"},
+{"id":"3","migration":"0001_01_01_000002_create_jobs_table","batch":"1"},
+{"id":"4","migration":"2024_03_01_000000_add_photo_to_users_table","batch":"1"},
+{"id":"5","migration":"2026_02_09_153653_create_crm_tables","batch":"1"},
+{"id":"6","migration":"2026_02_10_152234_add_status_to_customers_table","batch":"1"},
+{"id":"7","migration":"2026_02_10_160714_create_inquiries_table","batch":"1"},
+{"id":"8","migration":"2026_02_10_165109_add_columns_to_customers_table","batch":"2"},
+{"id":"9","migration":"2026_02_10_190632_add_status_and_logs_to_inquiries","batch":"3"},
+{"id":"10","migration":"2026_02_13_200454_add_profile_fields_to_customers_table","batch":"4"},
+{"id":"11","migration":"2026_02_15_091137_create_product_service_tables","batch":"5"},
+{"id":"12","migration":"2026_02_15_140624_add_gst_columns_to_tables","batch":"6"},
+{"id":"13","migration":"2026_02_15_144851_add_gst_to_order_items","batch":"7"},
+{"id":"14","migration":"2026_02_15_170455_create_settings_table","batch":"8"},
+{"id":"15","migration":"2026_02_16_135230_create_integrations_table","batch":"9"},
+{"id":"17","migration":"2026_02_18_000000_create_expenses_table","batch":"10"},
+{"id":"18","migration":"2026_02_22_161102_create_permission_tables","batch":"11"}
+]
+}
+,{"type":"table","name":"model_has_permissions","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"model_has_roles","database":"tcstudio","data":
+[
+{"role_id":"1","model_type":"App\\Models\\User","model_id":"1"},
+{"role_id":"3","model_type":"App\\Models\\User","model_id":"2"}
+]
+}
+,{"type":"table","name":"orders","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"order_items","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"password_reset_tokens","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"payments","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"permissions","database":"tcstudio","data":
+[
+{"id":"1","name":"view dashboard","guard_name":"web","created_at":"2026-02-22 16:14:51","updated_at":"2026-02-22 16:14:51"},
+{"id":"2","name":"view customers","guard_name":"web","created_at":"2026-02-22 16:14:51","updated_at":"2026-02-22 16:14:51"},
+{"id":"3","name":"create customers","guard_name":"web","created_at":"2026-02-22 16:14:51","updated_at":"2026-02-22 16:14:51"},
+{"id":"4","name":"edit customers","guard_name":"web","created_at":"2026-02-22 16:14:51","updated_at":"2026-02-22 16:14:51"},
+{"id":"5","name":"delete customers","guard_name":"web","created_at":"2026-02-22 16:14:51","updated_at":"2026-02-22 16:14:51"},
+{"id":"6","name":"export customers","guard_name":"web","created_at":"2026-02-22 16:14:51","updated_at":"2026-02-22 16:14:51"},
+{"id":"7","name":"toggle customer status","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"8","name":"view staff","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"9","name":"create staff","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"10","name":"edit staff","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"11","name":"delete staff","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"12","name":"export staff","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"13","name":"toggle staff status","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"14","name":"view inquiries","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"15","name":"create inquiries","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"16","name":"edit inquiries","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"17","name":"delete inquiries","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"18","name":"export inquiries","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"19","name":"manage inquiry logs","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"20","name":"convert inquiries","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"21","name":"view bookings","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"22","name":"create bookings","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"23","name":"edit bookings","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"24","name":"delete bookings","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"25","name":"export bookings","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"26","name":"view booking calendar","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"27","name":"view orders","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"28","name":"create orders","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"29","name":"edit orders","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"30","name":"delete orders","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"31","name":"export orders","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"32","name":"download order pdf","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"33","name":"view payments","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"34","name":"add payments","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"35","name":"delete payments","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"36","name":"export payments","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"37","name":"view expenses","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"38","name":"create expenses","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"39","name":"edit expenses","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"40","name":"delete expenses","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"41","name":"export expenses","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"42","name":"view products","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"43","name":"create products","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"44","name":"edit products","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"45","name":"delete products","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"46","name":"view reports","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"47","name":"export reports","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"48","name":"manage settings","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"49","name":"manage integrations","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"50","name":"manage roles","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"}
+]
+}
+,{"type":"table","name":"product_services","database":"tcstudio","data":
+[
+{"id":"1","name":"Studio Rental","type":"Service","pricing_model":"Hourly","price":"1500.00","gst_rate":"18.00","description":null,"is_active":"1","created_at":"2026-02-15 09:54:25","updated_at":"2026-02-15 14:33:13"},
+{"id":"3","name":"Recording Camera","type":"Product","pricing_model":"Hourly","price":"250.00","gst_rate":"18.00","description":null,"is_active":"1","created_at":"2026-02-15 09:55:23","updated_at":"2026-02-15 14:32:56"},
+{"id":"4","name":"Recording Camera Stand","type":"Product","pricing_model":"Fixed","price":"100.00","gst_rate":"18.00","description":null,"is_active":"1","created_at":"2026-02-15 09:55:48","updated_at":"2026-02-15 14:33:05"},
+{"id":"5","name":"Professional Recording Service","type":"Service","pricing_model":"Hourly","price":"500.00","gst_rate":"18.00","description":null,"is_active":"1","created_at":"2026-02-15 09:56:13","updated_at":"2026-02-15 14:32:46"},
+{"id":"6","name":"Tea \/ Coffee","type":"Product","pricing_model":"Per Unit","price":"20.00","gst_rate":"18.00","description":null,"is_active":"1","created_at":"2026-02-15 09:56:53","updated_at":"2026-02-15 14:33:24"},
+{"id":"7","name":"Mineral Water - 1 Ltr","type":"Product","pricing_model":"Per Unit","price":"30.00","gst_rate":"18.00","description":null,"is_active":"1","created_at":"2026-02-15 09:57:18","updated_at":"2026-02-15 14:32:36"}
+]
+}
+,{"type":"table","name":"product_service_tables","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"roles","database":"tcstudio","data":
+[
+{"id":"1","name":"Super Admin","guard_name":"web","created_at":"2026-02-22 16:14:52","updated_at":"2026-02-22 16:14:52"},
+{"id":"2","name":"Staff","guard_name":"web","created_at":"2026-02-22 18:38:23","updated_at":"2026-02-22 18:38:23"},
+{"id":"3","name":"DOP","guard_name":"web","created_at":"2026-02-24 07:14:43","updated_at":"2026-02-24 07:14:43"}
+]
+}
+,{"type":"table","name":"role_has_permissions","database":"tcstudio","data":
+[
+{"permission_id":"1","role_id":"1"},
+{"permission_id":"2","role_id":"1"},
+{"permission_id":"3","role_id":"1"},
+{"permission_id":"4","role_id":"1"},
+{"permission_id":"5","role_id":"1"},
+{"permission_id":"6","role_id":"1"},
+{"permission_id":"7","role_id":"1"},
+{"permission_id":"8","role_id":"1"},
+{"permission_id":"9","role_id":"1"},
+{"permission_id":"10","role_id":"1"},
+{"permission_id":"11","role_id":"1"},
+{"permission_id":"12","role_id":"1"},
+{"permission_id":"13","role_id":"1"},
+{"permission_id":"14","role_id":"1"},
+{"permission_id":"15","role_id":"1"},
+{"permission_id":"16","role_id":"1"},
+{"permission_id":"17","role_id":"1"},
+{"permission_id":"18","role_id":"1"},
+{"permission_id":"19","role_id":"1"},
+{"permission_id":"20","role_id":"1"},
+{"permission_id":"21","role_id":"1"},
+{"permission_id":"22","role_id":"1"},
+{"permission_id":"23","role_id":"1"},
+{"permission_id":"24","role_id":"1"},
+{"permission_id":"25","role_id":"1"},
+{"permission_id":"26","role_id":"1"},
+{"permission_id":"27","role_id":"1"},
+{"permission_id":"28","role_id":"1"},
+{"permission_id":"29","role_id":"1"},
+{"permission_id":"30","role_id":"1"},
+{"permission_id":"31","role_id":"1"},
+{"permission_id":"32","role_id":"1"},
+{"permission_id":"33","role_id":"1"},
+{"permission_id":"34","role_id":"1"},
+{"permission_id":"35","role_id":"1"},
+{"permission_id":"36","role_id":"1"},
+{"permission_id":"37","role_id":"1"},
+{"permission_id":"38","role_id":"1"},
+{"permission_id":"39","role_id":"1"},
+{"permission_id":"40","role_id":"1"},
+{"permission_id":"41","role_id":"1"},
+{"permission_id":"42","role_id":"1"},
+{"permission_id":"43","role_id":"1"},
+{"permission_id":"44","role_id":"1"},
+{"permission_id":"45","role_id":"1"},
+{"permission_id":"46","role_id":"1"},
+{"permission_id":"47","role_id":"1"},
+{"permission_id":"48","role_id":"1"},
+{"permission_id":"49","role_id":"1"},
+{"permission_id":"50","role_id":"1"},
+{"permission_id":"1","role_id":"2"},
+{"permission_id":"2","role_id":"2"},
+{"permission_id":"3","role_id":"2"},
+{"permission_id":"4","role_id":"2"},
+{"permission_id":"5","role_id":"2"},
+{"permission_id":"7","role_id":"2"},
+{"permission_id":"8","role_id":"2"},
+{"permission_id":"14","role_id":"2"},
+{"permission_id":"15","role_id":"2"},
+{"permission_id":"16","role_id":"2"},
+{"permission_id":"17","role_id":"2"},
+{"permission_id":"19","role_id":"2"},
+{"permission_id":"20","role_id":"2"},
+{"permission_id":"21","role_id":"2"},
+{"permission_id":"22","role_id":"2"},
+{"permission_id":"23","role_id":"2"},
+{"permission_id":"24","role_id":"2"},
+{"permission_id":"26","role_id":"2"},
+{"permission_id":"27","role_id":"2"},
+{"permission_id":"28","role_id":"2"},
+{"permission_id":"29","role_id":"2"},
+{"permission_id":"30","role_id":"2"},
+{"permission_id":"32","role_id":"2"},
+{"permission_id":"33","role_id":"2"},
+{"permission_id":"34","role_id":"2"},
+{"permission_id":"35","role_id":"2"},
+{"permission_id":"37","role_id":"2"},
+{"permission_id":"38","role_id":"2"},
+{"permission_id":"39","role_id":"2"},
+{"permission_id":"40","role_id":"2"},
+{"permission_id":"42","role_id":"2"},
+{"permission_id":"46","role_id":"2"},
+{"permission_id":"21","role_id":"3"},
+{"permission_id":"26","role_id":"3"}
+]
+}
+,{"type":"table","name":"services","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"sessions","database":"tcstudio","data":
+[
+
+]
+}
+,{"type":"table","name":"settings","database":"tcstudio","data":
+[
+{"id":"1","key":"company_logo","value":"logos\/z9u8NS3zoEik6LZXiuxGBVmsG5Zb36Wl0zFEgkCz.png","created_at":"2026-02-15 17:31:59","updated_at":"2026-02-15 17:31:59"},
+{"id":"2","key":"company_name","value":"AddFrame Studio","created_at":"2026-02-15 17:31:59","updated_at":"2026-02-15 17:38:11"},
+{"id":"3","key":"company_address","value":"C\/307 Ganesh Meridian,\r\nS G Highway, Sola, Ahmedabad 380060.","created_at":"2026-02-15 17:31:59","updated_at":"2026-02-15 17:43:30"},
+{"id":"4","key":"company_email","value":"info@addframestudio.com","created_at":"2026-02-15 17:31:59","updated_at":"2026-02-15 17:38:11"},
+{"id":"5","key":"company_phone","value":"+91 98989 89898","created_at":"2026-02-15 17:31:59","updated_at":"2026-02-15 17:38:11"},
+{"id":"6","key":"company_website","value":"https:\/\/www.addframestudio.com","created_at":"2026-02-15 17:31:59","updated_at":"2026-02-15 17:38:11"},
+{"id":"7","key":"invoice_prefix","value":"INV-","created_at":"2026-02-15 17:31:59","updated_at":"2026-02-15 17:31:59"},
+{"id":"8","key":"invoice_footer_text","value":"Thank you for your business.","created_at":"2026-02-15 17:31:59","updated_at":"2026-02-15 17:38:11"},
+{"id":"9","key":"default_invoice_notes","value":"- Terms & Conditions apply.\r\n- Subject to Ahmedabad jurisdictions.","created_at":"2026-02-15 17:31:59","updated_at":"2026-02-15 17:38:11"},
+{"id":"10","key":"meta_app_id","value":null,"created_at":"2026-02-17 07:07:08","updated_at":"2026-02-24 07:20:30"},
+{"id":"11","key":"meta_app_secret","value":null,"created_at":"2026-02-17 07:07:08","updated_at":"2026-02-24 07:20:30"}
+]
+}
+,{"type":"table","name":"users","database":"tcstudio","data":
+[
+{"id":"1","role":"admin","name":"Super Admin","email":"admin@gmail.com","status":"1","photo":null,"mobile":"9876543210","email_verified_at":null,"password":"$2y$12$Iv340eIWRffzlGL7.5bxsuXWo7sB0QlbUkaXIg4Nz0y.EM\/Iu\/Nne","remember_token":null,"created_at":"2026-02-10 16:43:01","updated_at":"2026-02-10 16:43:01"},
+{"id":"2","role":"staff","name":"Nishit Patel","email":"nishit@techcelerity.com","status":"1","photo":"1770742149_ChatGPT Image Nov 12, 2025, 04_47_29 PM.png","mobile":"9714033266","email_verified_at":null,"password":"$2y$12$okDj0.iyyaE1VEdoSmJLBe8.yLYxfPxAqde7ycXvdJFJ7aM9juz2K","remember_token":"DPb62eboo1QgCG4wVvHrqYJZHkXmj6K5fYUSFr7nC7nUPMayRaLum0tKmeaZ","created_at":"2026-02-10 16:49:09","updated_at":"2026-02-23 06:37:19"}
+]
+}
+]

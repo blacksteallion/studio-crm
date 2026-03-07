@@ -1,0 +1,371 @@
+@extends('layouts.app')
+@section('header', 'System Settings')
+
+@section('content')
+<div class="max-w-5xl mx-auto" 
+     x-data="{ activeTab: window.innerWidth < 768 ? 'general' : '{{ request('tab') == 'integrations' ? 'integrations' : 'general' }}' }" 
+     @resize.window="if(window.innerWidth < 768) activeTab = 'general'">
+
+    @if(session('success'))
+        <div class="mb-6 flex w-full border-l-4 border-green-500 bg-green-50 p-4 rounded-r-md shadow-sm">
+            <div class="mr-3 text-green-600"><i class="fas fa-check-circle"></i></div>
+            <h5 class="font-bold text-green-700 text-sm">{{ session('success') }}</h5>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-6 flex w-full border-l-4 border-red-500 bg-red-50 p-4 rounded-r-md shadow-sm">
+            <div class="mr-3 text-red-600"><i class="fas fa-exclamation-triangle"></i></div>
+            <h5 class="font-bold text-red-700 text-sm">{{ session('error') }}</h5>
+        </div>
+    @endif
+
+    <div class="flex border-b border-gray-200 mb-6">
+        <button @click="activeTab = 'general'" 
+            :class="activeTab === 'general' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+            class="w-full md:w-auto py-4 px-6 border-b-2 font-bold text-sm transition focus:outline-none text-center md:text-left">
+            General Settings
+        </button>
+        <button @click="activeTab = 'integrations'" 
+            :class="activeTab === 'integrations' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+            class="hidden md:flex py-4 px-6 border-b-2 font-bold text-sm transition focus:outline-none items-center gap-2">
+            <i class="fab fa-facebook text-blue-600"></i> Integrations
+        </button>
+    </div>
+
+    <div x-show="activeTab === 'general'" x-cloak>
+        <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm mb-8 overflow-hidden">
+                <div class="border-b border-gray-100 py-4 px-6 bg-gray-50">
+                    <h3 class="font-bold text-slate-800 text-lg">A. Company Profile</h3>
+                    <p class="text-xs text-gray-500">These details will appear on your Invoices and Documents.</p>
+                </div>
+                <div class="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Company Name</label>
+                        <input type="text" name="company_name" value="{{ $settings['company_name'] ?? '' }}" class="w-full rounded-xl border border-gray-200 bg-white py-2.5 px-4 md:py-3 md:px-5 text-sm md:text-base text-slate-800 outline-none focus:border-blue-500">
+                    </div>
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Company Address</label>
+                        <textarea name="company_address" rows="3" class="w-full rounded-xl border border-gray-200 bg-white py-2.5 px-4 md:py-3 md:px-5 text-sm md:text-base text-slate-800 outline-none focus:border-blue-500">{{ $settings['company_address'] ?? '' }}</textarea>
+                    </div>
+                    <div>
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Contact Email</label>
+                        <input type="email" name="company_email" value="{{ $settings['company_email'] ?? '' }}" class="w-full rounded-xl border border-gray-200 bg-white py-2.5 px-4 md:py-3 md:px-5 text-sm md:text-base text-slate-800 outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Contact Phone</label>
+                        <input type="text" name="company_phone" value="{{ $settings['company_phone'] ?? '' }}" class="w-full rounded-xl border border-gray-200 bg-white py-2.5 px-4 md:py-3 md:px-5 text-sm md:text-base text-slate-800 outline-none focus:border-blue-500">
+                    </div>
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Website URL</label>
+                        <input type="text" name="company_website" value="{{ $settings['company_website'] ?? '' }}" class="w-full rounded-xl border border-gray-200 bg-white py-2.5 px-4 md:py-3 md:px-5 text-sm md:text-base text-slate-800 outline-none focus:border-blue-500">
+                    </div>
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Company Logo</label>
+                        <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                            <div class="w-full flex-1">
+                                <input type="file" name="company_logo" class="w-full rounded-xl border border-gray-200 bg-white py-2 px-3 md:py-3 md:px-5 text-sm md:text-base text-slate-800 outline-none focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs md:file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                <p class="text-[10px] md:text-xs text-gray-400 mt-2">Accepted formats: PNG, JPG, SVG. Max size: 2MB.</p>
+                            </div>
+                            @if(isset($settings['company_logo']))
+                                <div class="flex-shrink-0 text-center w-full sm:w-auto flex flex-col items-center">
+                                    <p class="text-xs text-gray-500 mb-1">Current:</p>
+                                    <div class="h-16 w-16 border border-gray-200 rounded-lg p-1 flex items-center justify-center bg-gray-50">
+                                        <img src="{{ asset('storage/' . $settings['company_logo']) }}" alt="Logo" class="max-h-full max-w-full">
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm mb-8 overflow-hidden">
+                <div class="border-b border-gray-100 py-4 px-6 bg-gray-50">
+                    <h3 class="font-bold text-slate-800 text-lg">B. Invoice Configuration</h3>
+                </div>
+                <div class="p-4 md:p-6 grid grid-cols-1 gap-4 md:gap-6">
+                    <div>
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Invoice Prefix</label>
+                        <div class="flex items-center">
+                            <span class="bg-gray-100 border border-gray-200 border-r-0 rounded-l-xl px-4 py-2.5 md:py-3 text-gray-500 text-sm font-bold">INV-</span>
+                            <input type="text" name="invoice_prefix" value="{{ $settings['invoice_prefix'] ?? 'INV-' }}" class="w-full rounded-r-xl border border-gray-200 bg-white py-2.5 px-4 md:py-3 md:px-5 text-sm md:text-base text-slate-800 outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Invoice Footer Text / Terms</label>
+                        <textarea name="invoice_footer_text" rows="3" class="w-full rounded-xl border border-gray-200 bg-white py-2.5 px-4 md:py-3 md:px-5 text-sm md:text-base text-slate-800 outline-none focus:border-blue-500">{{ $settings['invoice_footer_text'] ?? '' }}</textarea>
+                    </div>
+                    <div>
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Default Invoice Notes</label>
+                        <textarea name="default_invoice_notes" rows="2" class="w-full rounded-xl border border-gray-200 bg-white py-2.5 px-4 md:py-3 md:px-5 text-sm md:text-base text-slate-800 outline-none focus:border-blue-500">{{ $settings['default_invoice_notes'] ?? '' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col-reverse md:flex-row justify-end gap-3 md:gap-4 mb-10">
+                <a href="{{ route('dashboard') }}" class="w-full md:w-auto text-center rounded-xl border border-gray-300 bg-white py-3 px-6 font-bold text-gray-700 hover:bg-gray-50 transition">Cancel</a>
+                <button type="submit" class="w-full md:w-auto text-center rounded-xl bg-blue-600 py-3 px-8 font-bold text-white hover:bg-blue-700 transition shadow-md">
+                    <i class="fas fa-save mr-2"></i> Save Settings
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div x-show="activeTab === 'integrations'" x-cloak class="hidden md:block">
+        
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm mb-8 overflow-hidden">
+            <div class="bg-indigo-50 border-b border-indigo-100 py-4 px-6 flex items-center gap-3">
+                <i class="fas fa-magic text-indigo-600"></i>
+                <h3 class="font-bold text-indigo-900 text-lg">How to Connect Facebook Lead Ads</h3>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="{{ route('integrations.facebook.checklist') }}" target="_blank" class="group block p-4 rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-all">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">1</div>
+                        <h4 class="font-bold text-slate-800">Checklist</h4>
+                    </div>
+                    <p class="text-xs text-gray-500">Read this FIRST. Ensure you have the right Admin permissions.</p>
+                    <span class="text-xs font-bold text-indigo-600 mt-2 block">View Guide &rarr;</span>
+                </a>
+
+                <a href="{{ route('integrations.facebook.app-setup') }}" target="_blank" class="group block p-4 rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-all">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">2</div>
+                        <h4 class="font-bold text-slate-800">Create App</h4>
+                    </div>
+                    <p class="text-xs text-gray-500">Create the App on Meta, clean permissions, and get API Keys.</p>
+                    <span class="text-xs font-bold text-indigo-600 mt-2 block">View Guide &rarr;</span>
+                </a>
+
+                <a href="{{ route('integrations.facebook.instructions') }}" target="_blank" class="group block p-4 rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-all">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">3</div>
+                        <h4 class="font-bold text-slate-800">Connect</h4>
+                    </div>
+                    <p class="text-xs text-gray-500">Paste keys below, configure webhooks, and sync your Page.</p>
+                    <span class="text-xs font-bold text-indigo-600 mt-2 block">View Guide &rarr;</span>
+                </a>
+            </div>
+        </div>
+
+        <form action="{{ route('settings.update') }}" method="POST" class="mb-8">
+            @csrf
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="border-b border-gray-100 py-4 px-6 bg-gray-50 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Meta App Configuration</h3>
+                        <p class="text-xs text-gray-500">Enter the App credentials obtained from Step 2.</p>
+                    </div>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="mb-2 block font-bold text-sm text-slate-700">Callback URL (Webhook)</label>
+                        <div class="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-0">
+                            <input type="text" value="{{ route('webhooks.meta.handle') }}" readonly class="w-full md:flex-1 rounded-xl border border-gray-200 bg-gray-100 py-3 px-5 text-gray-500 outline-none cursor-not-allowed">
+                            <button type="button" onclick="navigator.clipboard.writeText('{{ route('webhooks.meta.handle') }}'); alert('Copied!');" class="w-full md:w-auto md:ml-3 text-blue-600 hover:text-blue-800 font-bold text-sm whitespace-nowrap bg-blue-50 hover:bg-blue-100 md:bg-transparent py-2.5 px-4 md:p-0 rounded-lg md:rounded-none text-center transition">Copy URL</button>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-2">Paste this into the Webhook setup on Facebook.</p>
+                    </div>
+
+                    <div>
+                        <label class="mb-2 block font-bold text-sm text-slate-700">App ID</label>
+                        <input type="text" name="meta_app_id" value="{{ $settings['meta_app_id'] ?? '' }}" class="w-full rounded-xl border border-gray-200 bg-white py-3 px-5 text-slate-800 outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="mb-2 block font-bold text-sm text-slate-700">App Secret</label>
+                        <input type="password" name="meta_app_secret" value="{{ $settings['meta_app_secret'] ?? '' }}" class="w-full rounded-xl border border-gray-200 bg-white py-3 px-5 text-slate-800 outline-none focus:border-blue-500">
+                        <p class="text-xs text-gray-400 mt-1">This is also your "Verify Token".</p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-6 py-4 flex justify-end">
+                    <button type="submit" class="bg-slate-800 hover:bg-black text-white text-sm font-bold py-2 px-5 rounded-lg shadow-sm">Save Keys</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm mb-8 overflow-hidden">
+            <div class="border-b border-gray-100 py-4 px-6 bg-gray-50 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-lg">Connection Status</h3>
+                </div>
+                <div class="flex items-center gap-3">
+                    @if($metaIntegration && $metaIntegration->is_active)
+                        <span class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-bold uppercase tracking-wide border border-green-200">Connected</span>
+                    @else
+                        <span class="bg-gray-100 text-gray-500 py-1 px-3 rounded-full text-xs font-bold uppercase tracking-wide border border-gray-200">Disconnected</span>
+                    @endif
+                </div>
+            </div>
+            
+            <div class="p-8 text-center">
+                @if(empty($settings['meta_app_id']) || empty($settings['meta_app_secret']))
+                    <div class="text-center py-6">
+                        <div class="bg-yellow-50 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-key text-2xl text-yellow-600"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-800">Configuration Missing</h4>
+                        <p class="text-sm text-gray-500">Please enter and save your App ID and Secret above to proceed.</p>
+                    </div>
+                
+                @elseif(!$metaIntegration || !$metaIntegration->is_active)
+                    {{-- DISCONNECTED STATE --}}
+                    <div class="mb-6">
+                        <div class="bg-blue-50 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-blue-100">
+                            <i class="fab fa-facebook-f text-3xl text-blue-600"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-800">Connect your Facebook Page</h4>
+                        <p class="text-sm text-gray-500 max-w-md mx-auto mt-2">Authorize this app to access your Facebook Pages and Leads.</p>
+                    </div>
+                    
+                    <a href="{{ route('integrations.facebook.connect') }}" class="inline-flex items-center gap-2 bg-[#1877F2] hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all transform hover:scale-105">
+                        <i class="fab fa-facebook text-lg"></i> Continue with Facebook
+                    </a>
+
+                @else
+                    {{-- CONNECTED STATE --}}
+                    <div class="max-w-xl mx-auto bg-green-50 border border-green-100 rounded-2xl p-6 flex items-center justify-between shadow-sm mb-8">
+                        <div class="flex items-center gap-5">
+                            <div class="h-14 w-14 rounded-full bg-white border-2 border-green-200 flex items-center justify-center shadow-sm">
+                                <i class="fas fa-check text-2xl text-green-500"></i>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-xs font-bold text-green-600 uppercase tracking-wider mb-1">Active Account</div>
+                                <h4 class="text-xl font-bold text-slate-800">{{ $metaIntegration->page_name }}</h4>
+                                <p class="text-xs text-gray-500 font-mono mt-1">ID: {{ $metaIntegration->page_id }}</p>
+                            </div>
+                        </div>
+                        
+                        <form action="{{ route('integrations.disconnect') }}" method="POST" onsubmit="return confirm('Are you sure you want to disconnect? Leads will stop syncing.');">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="group flex flex-col items-center justify-center w-20 h-20 rounded-xl bg-white border border-red-100 hover:border-red-300 hover:bg-red-50 transition-all cursor-pointer">
+                                <i class="fas fa-power-off text-red-400 group-hover:text-red-600 text-xl mb-1"></i>
+                                <span class="text-[10px] font-bold text-red-400 group-hover:text-red-600">Disconnect</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    {{-- FIELD MAPPING UI --}}
+                    <div class="text-left border-t border-gray-100 pt-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wide">Field Mapping</h4>
+                                <p class="text-xs text-gray-500 mt-1">Map your Lead Form fields to CRM columns.</p>
+                            </div>
+                            <a href="{{ route('integrations.facebook.instructions') }}" target="_blank" class="text-xs font-bold text-blue-600 hover:underline">
+                                <i class="fas fa-info-circle mr-1"></i> Help
+                            </a>
+                        </div>
+                        
+                        <form action="{{ route('integrations.mapping.update') }}" method="POST">
+                            @csrf
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 space-y-3">
+                                @php 
+                                    $mappings = $metaIntegration->field_mapping ?? []; 
+                                    if(empty($mappings)) $mappings = ['full_name' => 'name', 'email' => 'email', 'phone_number' => 'mobile'];
+                                @endphp
+
+                                @foreach($mappings as $metaKey => $crmField)
+                                <div class="flex gap-4 items-center">
+                                    <div class="w-1/2">
+                                        <div class="relative">
+                                            <span class="absolute left-3 top-2.5 text-gray-400 text-xs font-bold">META</span>
+                                            <input type="text" name="meta_field[]" value="{{ $metaKey }}" placeholder="full_name" class="w-full rounded-lg border border-gray-300 pl-12 pr-3 py-2 text-sm font-mono text-slate-700">
+                                        </div>
+                                    </div>
+                                    <div class="text-gray-400"><i class="fas fa-arrow-right"></i></div>
+                                    <div class="w-1/2">
+                                        <select name="crm_field[]" class="w-full rounded-lg border border-gray-300 py-2 px-3 text-sm bg-white">
+                                            <option value="name" {{ $crmField == 'name' ? 'selected' : '' }}>Inquiry Name</option>
+                                            <option value="email" {{ $crmField == 'email' ? 'selected' : '' }}>Email</option>
+                                            <option value="mobile" {{ $crmField == 'mobile' ? 'selected' : '' }}>Mobile</option>
+                                            <option value="message" {{ $crmField == 'message' ? 'selected' : '' }}>Message/Note</option>
+                                            <option value="source" {{ $crmField == 'source' ? 'selected' : '' }}>Source</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                @endforeach
+                                
+                                <div class="flex gap-4 items-center opacity-60 hover:opacity-100 transition-opacity">
+                                    <div class="w-1/2">
+                                        <input type="text" name="meta_field[]" placeholder="+ Add new Meta key..." class="w-full rounded-lg border border-dashed border-gray-400 bg-transparent py-2 px-3 text-sm">
+                                    </div>
+                                    <div class="text-gray-300"><i class="fas fa-arrow-right"></i></div>
+                                    <div class="w-1/2">
+                                        <select name="crm_field[]" class="w-full rounded-lg border border-dashed border-gray-400 bg-transparent py-2 px-3 text-sm">
+                                            <option value="">Select CRM Field</option>
+                                            <option value="name">Inquiry Name</option>
+                                            <option value="email">Email</option>
+                                            <option value="mobile">Mobile</option>
+                                            <option value="message">Message/Note</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 flex justify-end">
+                                <button type="submit" class="bg-slate-800 hover:bg-black text-white text-sm font-bold py-2.5 px-6 rounded-lg shadow-md transition-all">Save Mapping</button>
+                            </div>
+                        </form>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    {{-- PAGE SELECTION MODAL --}}
+    @if(session()->has('facebook_pages'))
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm px-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8 relative animate-fade-in-up">
+            
+            <div class="text-center mb-6">
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 mb-4">
+                    <i class="fab fa-facebook-f text-xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Select Facebook Page</h3>
+                <p class="text-sm text-gray-500">Choose the page you want to sync leads from.</p>
+            </div>
+            
+            <form action="{{ route('integrations.facebook.save-page') }}" method="POST" class="space-y-3">
+                @csrf
+                
+                @if(count(session('facebook_pages')) > 0)
+                    <div class="max-h-60 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                        @foreach(session('facebook_pages') as $page)
+                            <label class="flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all group">
+                                <div class="relative flex items-center">
+                                    <input type="radio" name="page_id" value="{{ $page['id'] }}" required class="peer h-5 w-5 border-gray-300 text-blue-600 focus:ring-blue-500">
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 group-hover:text-blue-700">{{ $page['name'] }}</div>
+                                    <div class="text-xs text-gray-400">ID: {{ $page['id'] }}</div>
+                                </div>
+                                <input type="hidden" name="page_name" value="{{ $page['name'] }}">
+                                <input type="hidden" name="page_access_token" value="{{ $page['access_token'] }}">
+                            </label>
+                        @endforeach
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end gap-3">
+                        <a href="{{ route('settings.index', ['tab' => 'integrations']) }}" class="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-100 transition">Cancel</a>
+                        <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-200 transition-all">Connect Page</button>
+                    </div>
+                @else
+                    <div class="text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                        <p class="text-gray-500 text-sm">No pages found for this account.</p>
+                        <p class="text-xs text-gray-400 mt-1">Make sure you granted "Manage Page" permissions.</p>
+                    </div>
+                    <div class="mt-6 flex justify-center">
+                        <a href="{{ route('settings.index', ['tab' => 'integrations']) }}" class="px-5 py-2 rounded-xl text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200">Close</a>
+                    </div>
+                @endif
+            </form>
+        </div>
+    </div>
+    @endif
+
+</div>
+@endsection
