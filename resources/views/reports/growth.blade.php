@@ -13,7 +13,7 @@
 </style>
 
 @php
-    $isGlobal = session('active_location_id') === 'all';
+    $isGlobal = session('active_location_id', 'all') === 'all';
 @endphp
 
 @if($isGlobal)

@@ -10,7 +10,7 @@ class Expense extends Model
     use HasFactory;
 
     protected $fillable = [
-        'location_id', // <--- Added Location ID
+        'location_id', 
         'title',
         'amount',
         'category',
@@ -24,13 +24,11 @@ class Expense extends Model
         'expense_date' => 'date',
     ];
 
-    // --- NEW: Location Relationship ---
     public function location()
     {
         return $this->belongsTo(Location::class);
     }
 
-    // --- STANDARD CATEGORIES CONFIGURATION ---
     public static function categories()
     {
         return [

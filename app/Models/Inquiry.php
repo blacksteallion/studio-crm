@@ -10,7 +10,7 @@ class Inquiry extends Model
     use HasFactory;
 
     protected $fillable = [
-        'location_id', // <--- ADDED location_id
+        'location_id', // Links inquiry to a specific branch
         'customer_id',
         'business_name',
         'lead_source_id',

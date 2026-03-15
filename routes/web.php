@@ -103,11 +103,17 @@ Route::middleware('auth')->group(function () {
     Route::resource('roles', RoleController::class)->middleware('can:manage roles');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+    
+    // WhatsApp Multi-Number Routing
+    Route::post('/settings/whatsapp-numbers', [SettingController::class, 'storeWhatsappNumber'])->name('settings.whatsapp.store');
+    Route::delete('/settings/whatsapp-numbers/{id}', [SettingController::class, 'destroyWhatsappNumber'])->name('settings.whatsapp.destroy');
+
     Route::post('/staff/{id}/toggle-status', [StaffController::class, 'toggleStatus'])->name('staff.toggle-status');
     Route::post('/customers/{id}/toggle-status', [CustomerController::class, 'toggleStatus'])->name('customers.toggle-status');
 
     // Integrations
     Route::middleware('can:manage integrations')->group(function () {
+        // Facebook Lead Ads
         Route::get('/integrations', [IntegrationController::class, 'showChecklistGuide'])->name('integrations.index'); 
         Route::get('/integrations/facebook/checklist', [IntegrationController::class, 'showChecklistGuide'])->name('integrations.facebook.checklist'); 
         Route::get('/integrations/facebook/app-setup', [IntegrationController::class, 'showAppSetupGuide'])->name('integrations.facebook.app-setup'); 
@@ -117,6 +123,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/integrations/facebook/save-page', [IntegrationController::class, 'savePageSelection'])->name('integrations.facebook.save-page');
         Route::post('/integrations/mapping', [IntegrationController::class, 'updateMapping'])->name('integrations.mapping.update');
         Route::delete('/integrations/disconnect', [IntegrationController::class, 'disconnect'])->name('integrations.disconnect');
+
+        // WhatsApp CTWA Documentation
+        Route::get('/integrations/whatsapp/checklist', [IntegrationController::class, 'showWaChecklistGuide'])->name('integrations.whatsapp.checklist'); 
+        Route::get('/integrations/whatsapp/app-setup', [IntegrationController::class, 'showWaAppSetupGuide'])->name('integrations.whatsapp.app-setup'); 
+        Route::get('/integrations/whatsapp/instructions', [IntegrationController::class, 'showWaInstructions'])->name('integrations.whatsapp.instructions'); 
     });
 
     // --- REPORTS ---

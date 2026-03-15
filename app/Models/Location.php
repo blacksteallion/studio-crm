@@ -9,24 +9,38 @@ class Location extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name', 
+        'address', 
+        'contact_number', 
+        'is_active'
+    ];
 
-    // Add these missing relationships so the Controller can check them!
-    
-    public function bookings()
-    {
+    public function users() {
+        return $this->belongsToMany(User::class);
+    }
+
+    public function customers() {
+        return $this->belongsToMany(Customer::class);
+    }
+
+    public function productServices() {
+        return $this->belongsToMany(ProductService::class);
+    }
+
+    public function bookings() {
         return $this->hasMany(Booking::class);
     }
 
-    public function inquiries()
-    {
-        return $this->hasMany(Inquiry::class);
-    }
-
-    public function orders()
-    {
+    public function orders() {
         return $this->hasMany(Order::class);
     }
 
-    // You likely already have users() or other methods below here...
+    public function expenses() {
+        return $this->hasMany(Expense::class);
+    }
+
+    public function inquiries() {
+        return $this->hasMany(Inquiry::class);
+    }
 }

@@ -9,7 +9,7 @@ class Booking extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $guarded = []; // Allows location_id to be mass-assigned automatically
 
     protected $casts = [
         'booking_date' => 'date',
@@ -17,7 +17,6 @@ class Booking extends Model
         'end_time' => 'datetime',
     ];
 
-    // --- NEW RELATIONSHIP ---
     public function location()
     {
         return $this->belongsTo(Location::class);

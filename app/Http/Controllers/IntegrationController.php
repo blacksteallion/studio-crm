@@ -170,4 +170,21 @@ class IntegrationController extends Controller implements HasMiddleware
         return redirect()->route('settings.index', ['tab' => 'integrations'])
             ->with('success', 'Facebook integration disconnected.');
     }
+	
+	// --- WHATSAPP DOCUMENTATION VIEWS ---
+
+    public function showWaChecklistGuide()
+    {
+        return view('integrations.whatsapp.checklist');
+    }
+
+    public function showWaAppSetupGuide()
+    {
+        return view('integrations.whatsapp.app-setup');
+    }
+
+    public function showWaInstructions()
+    {
+        return view('integrations.whatsapp.instructions');
+    }
 }

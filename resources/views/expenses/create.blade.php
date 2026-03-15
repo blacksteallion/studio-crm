@@ -23,10 +23,10 @@
                 
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">Studio Location <span class="text-red-500">*</span></label>
-                    <select name="location_id" required class="w-full rounded-lg border border-gray-200 py-2.5 px-3 bg-white focus:border-blue-500 focus:ring-blue-500">
+                    <select name="location_id" required class="w-full rounded-lg border border-gray-200 py-2.5 px-3 bg-white focus:border-blue-500 focus:ring-blue-500 @error('location_id') !border-red-500 !bg-red-50 @enderror">
                         <option value="">Select Location...</option>
                         @foreach($locations as $loc)
-                            <option value="{{ $loc->id }}" {{ old('location_id', session('active_location_id')) == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
+                            <option value="{{ $loc->id }}" {{ old('location_id', session('active_location_id') !== 'all' ? session('active_location_id') : '') == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
                         @endforeach
                     </select>
                 </div>

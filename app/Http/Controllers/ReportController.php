@@ -42,7 +42,7 @@ class ReportController extends Controller implements HasMiddleware
         $prevStart = $prevDates['start'];
         $prevEnd = $prevDates['end'];
 
-        $locationId = session('active_location_id');
+        $locationId = session('active_location_id', 'all');
 
         $totalRevenue = Order::whereBetween('created_at', [$start, $end])
             ->when($locationId !== 'all', fn($q) => $q->where('location_id', $locationId))
@@ -151,7 +151,7 @@ class ReportController extends Controller implements HasMiddleware
             'productLabels' => $productLabels,
             'productValues' => $productValues,
             'ledger' => $ledger,
-            'agingBuckets' => $agingBuckets // <--- Passed to view
+            'agingBuckets' => $agingBuckets 
         ]);
     }
 
@@ -160,7 +160,7 @@ class ReportController extends Controller implements HasMiddleware
         $dates = $this->getDates($request);
         $start = $dates['start'];
         $end = $dates['end'];
-        $locationId = session('active_location_id');
+        $locationId = session('active_location_id', 'all');
         
         $ledger = $this->getLedgerData($start, $end, $locationId);
 
@@ -218,7 +218,7 @@ class ReportController extends Controller implements HasMiddleware
         $dates = $this->getDates($request);
         $start = $dates['start'];
         $end = $dates['end'];
-        $locationId = session('active_location_id');
+        $locationId = session('active_location_id', 'all');
 
         $ledger = $this->getLedgerData($start, $end, $locationId);
         
@@ -257,7 +257,7 @@ class ReportController extends Controller implements HasMiddleware
         $dates = $this->getDates($request);
         $start = $dates['start'];
         $end = $dates['end'];
-        $locationId = session('active_location_id');
+        $locationId = session('active_location_id', 'all');
 
         $prevDates = $this->getPreviousPeriod($start, $end);
         $prevStart = $prevDates['start'];
@@ -424,7 +424,7 @@ class ReportController extends Controller implements HasMiddleware
             'cohortMatrix' => $matrix,
             'avgTimeSource' => $avgTimeSource,
             'avgTimeStaff' => $avgTimeStaff,
-            'staffLeaderboard' => $staffLeaderboard // <--- Passed to view
+            'staffLeaderboard' => $staffLeaderboard 
         ]);
     }
 
@@ -437,7 +437,7 @@ class ReportController extends Controller implements HasMiddleware
         $dates = $this->getDates($request);
         $start = $dates['start'];
         $end = $dates['end'];
-        $locationId = session('active_location_id');
+        $locationId = session('active_location_id', 'all');
 
         $prevDates = $this->getPreviousPeriod($start, $end);
         $prevStart = $prevDates['start'];
@@ -585,7 +585,7 @@ class ReportController extends Controller implements HasMiddleware
             'serviceLabels' => $serviceLabels,
             'serviceValues' => $serviceValues,
             'staffMatrix' => $staffMatrix,
-            'heatmapSeries' => $heatmapSeries // <--- Passed to view
+            'heatmapSeries' => $heatmapSeries
         ]);
     }
 
@@ -671,7 +671,7 @@ class ReportController extends Controller implements HasMiddleware
             ? "strftime('%Y-%m', $dateCol)" 
             : "DATE_FORMAT($dateCol, '%Y-%m')";
 
-        $locationId = session('active_location_id');
+        $locationId = session('active_location_id', 'all');
 
         $data = $model::whereBetween($dateCol, [$start, $end])
             ->when($locationId !== 'all', fn($q) => $q->where('location_id', $locationId))

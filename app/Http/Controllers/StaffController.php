@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Location; // <--- ADDED
+use App\Models\Location; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +29,7 @@ class StaffController extends Controller implements HasMiddleware
 
     public function index(Request $request)
     {
-        $query = User::where('role', 'staff')->with(['roles', 'locations']); // Eager load locations
+        $query = User::where('role', 'staff')->with(['roles', 'locations']); 
 
         $query = $this->applyFilters($query, $request);
 
@@ -66,7 +66,7 @@ class StaffController extends Controller implements HasMiddleware
     public function create()
     {
         $roles = Role::where('name', '!=', 'Super Admin')->get();
-        $locations = Location::where('is_active', true)->get(); // <--- ADDED
+        $locations = Location::where('is_active', true)->get(); 
         
         return view('staff.create', compact('roles', 'locations'));
     }
@@ -79,7 +79,7 @@ class StaffController extends Controller implements HasMiddleware
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'system_role' => 'required|exists:roles,name',
-            'locations' => 'required|array', // <--- Ensure locations are assigned
+            'locations' => 'required|array', 
             'locations.*' => 'exists:locations,id',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -116,7 +116,7 @@ class StaffController extends Controller implements HasMiddleware
     {
         $staff = User::with(['roles', 'locations'])->findOrFail($id);
         $roles = Role::where('name', '!=', 'Super Admin')->get();
-        $locations = Location::where('is_active', true)->get(); // <--- ADDED
+        $locations = Location::where('is_active', true)->get(); 
 
         return view('staff.edit', compact('staff', 'roles', 'locations'));
     }
@@ -131,7 +131,7 @@ class StaffController extends Controller implements HasMiddleware
             'email' => 'required|string|email|max:255|unique:users,email,' . $staff->id,
             'password' => 'nullable|string|min:8',
             'system_role' => 'required|exists:roles,name',
-            'locations' => 'required|array', // <--- Ensure locations are assigned
+            'locations' => 'required|array', 
             'locations.*' => 'exists:locations,id',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);

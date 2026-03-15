@@ -43,7 +43,7 @@
                         <select name="location_id" required class="w-full appearance-none rounded-xl border border-gray-200 bg-gray-50 py-3 px-5 text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white @error('location_id') !border-red-500 !bg-red-50 @enderror">
                             <option value="">-- Select Location --</option>
                             @foreach($locations as $loc)
-                                <option value="{{ $loc->id }}" {{ old('location_id', ($booking ? $booking->location_id : session('active_location_id'))) == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
+                                <option value="{{ $loc->id }}" {{ old('location_id', ($booking ? $booking->location_id : (session('active_location_id') !== 'all' ? session('active_location_id') : ''))) == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
                             @endforeach
                         </select>
                         <span class="absolute right-4 top-3.5 text-gray-500 pointer-events-none"><i class="fas fa-chevron-down"></i></span>
