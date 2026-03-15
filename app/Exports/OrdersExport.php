@@ -5,8 +5,12 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class OrdersExport implements FromCollection, WithHeadings, WithMapping
+class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithStyles
 {
     protected $orders;
 
@@ -30,12 +34,13 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'Invoice Number',
-            'Booking ID',
-            'Customer Name',
-            'Business Name',
             'Invoice Date',
             'Due Date',
-            'Subtotal (₹)',
+            'Booking ID',
+            'Customer Name',
+            'Mobile Number',
+            'Business / Company Name',
+            'Subtotal (Excl. Tax)',
             'Tax (₹)',
             'Discount (₹)',
             'Total Amount (₹)',
@@ -51,17 +56,44 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             $order->invoice_number,
-            $order->booking_id ? 'BKG-' . $order->booking_id : '-',
-            $order->customer->name ?? '-',
-            $order->customer->business_name ?? '-',
             $order->invoice_date ? $order->invoice_date->format('d M, Y') : '-',
             $order->due_date ? $order->due_date->format('d M, Y') : '-',
-            number_format($order->subtotal, 2, '.', ''),
-            number_format($order->tax, 2, '.', ''),
-            number_format($order->discount, 2, '.', ''),
-            number_format($order->total_amount, 2, '.', ''),
+            $order->booking_id ? 'BKG-' . $order->booking_id : '-',
+            $order->customer->name ?? '-',
+            (string) ($order->customer->mobile ?? '-'), // Cast to string to prevent Excel math conversions
+            $order->customer->business_name ?? '-',
+            $order->subtotal ?? 0,
+            $order->tax ?? 0,
+            $order->discount ?? 0,
+            $order->total_amount ?? 0,
             $order->status,
             $order->notes ?? '-'
+        ];
+    }
+
+    /**
+     * Format specific columns
+     * @return array
+     */
+    public function columnFormats(): array
+    {
+        return [
+            'F' => NumberFormat::FORMAT_TEXT,       // Protect Mobile Number from scientific notation
+            'H' => NumberFormat::FORMAT_NUMBER_00,  // Clean formatting for Subtotal
+            'I' => NumberFormat::FORMAT_NUMBER_00,  // Clean formatting for Tax
+            'J' => NumberFormat::FORMAT_NUMBER_00,  // Clean formatting for Discount
+            'K' => NumberFormat::FORMAT_NUMBER_00,  // Clean formatting for Total Amount
+        ];
+    }
+
+    /**
+     * Apply styles to the sheet
+     */
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            // Make the header row bold
+            1 => ['font' => ['bold' => true]], 
         ];
     }
 }

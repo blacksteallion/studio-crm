@@ -5,8 +5,12 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class ExpensesExport implements FromCollection, WithHeadings, WithMapping
+class ExpensesExport implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithStyles
 {
     protected $expenses;
 
@@ -34,8 +38,8 @@ class ExpensesExport implements FromCollection, WithHeadings, WithMapping
             'Title / Payee',
             'Category',
             'Amount (₹)',
-            'Reference Number',
-            'Recorded On'
+            'Studio Location',
+            'Notes'
         ];
     }
 
@@ -49,9 +53,31 @@ class ExpensesExport implements FromCollection, WithHeadings, WithMapping
             $expense->expense_date ? $expense->expense_date->format('d M, Y') : '-',
             $expense->title,
             $expense->category,
-            number_format($expense->amount, 2, '.', ''),
-            $expense->reference_no ?? '-',
-            $expense->created_at ? $expense->created_at->format('d M, Y h:i A') : '-'
+            $expense->amount ?? 0,
+            $expense->location->name ?? '-',
+            $expense->notes ?? '-'
+        ];
+    }
+
+    /**
+     * Format specific columns
+     * @return array
+     */
+    public function columnFormats(): array
+    {
+        return [
+            'E' => NumberFormat::FORMAT_NUMBER_00,  // Clean formatting for Amount
+        ];
+    }
+
+    /**
+     * Apply styles to the sheet
+     */
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            // Make the header row bold
+            1 => ['font' => ['bold' => true]], 
         ];
     }
 }

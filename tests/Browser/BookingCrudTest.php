@@ -1,6 +1,9 @@
 <?php
 
 use App\Models\User;
+use App\Models\Location;
+use App\Models\Customer;
+use App\Models\ProductService;
 use Laravel\Dusk\Browser;
 
 beforeEach(function () {
@@ -40,40 +43,58 @@ test('alpinejs dynamically calculates total estimate', function () {
 
 test('user can create and delete a booking', function () {
     $this->browse(function (Browser $browser) {
+        
+        // Fetch REAL IDs currently in the database
+        $locId = Location::first()->id ?? 1;
+        $cusId = Customer::first()->id ?? 1;
+        $prodId = ProductService::first()->id ?? 1;
+
         $browser->loginAs($this->user)
                 ->resize(1920, 1080)
                 ->visit('/bookings/create')
                 ->pause(1500);
 
-        // Nuke HTML required popups so backend validation can actually show us errors if they happen
         $browser->script("document.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));");
 
-        // 1. Select Valid Location 
+        // Attach our Ultimate JS Injector globally to the window
         $browser->script("
-            let loc = document.querySelector('select[name=\"location_id\"]');
-            if(loc) { loc.value = '1'; loc.dispatchEvent(new Event('change', { bubbles: true })); }
+            window.setDropdown = function(selector, val) {
+                let el = document.querySelector(selector);
+                if(el) {
+                    el.value = val;
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                    if(el.tomselect) el.tomselect.setValue(val);
+                    if(typeof jQuery !== 'undefined' && jQuery(el).hasClass('select2-hidden-accessible')) {
+                        jQuery(el).val(val).trigger('change');
+                    }
+                }
+            };
         ");
-        
-        $browser->pause(1500); // Wait for Cascade
 
-        // 2. Select Valid Customer and Valid Product from tcstudio.sql
+        // 1. Select Location and WAIT for Livewire/Alpine to re-render the DOM
+        $browser->script("window.setDropdown('select[name=\"location_id\"]', '{$locId}');");
+        $browser->pause(2000); 
+
+        // 2. Select Customer
+        $browser->script("window.setDropdown('select[name=\"customer_id\"]', '{$cusId}');");
+        $browser->pause(1000);
+
+        // 3. Select Product (Wait for Livewire to fetch default price)
+        $browser->script("window.setDropdown('select[name=\"items[0][product_service_id]\"]', '{$prodId}');");
+        $browser->pause(1500); 
+
+        // 4. Now that DOM is stable, set Price and Quantity
         $browser->script("
-            let cus = document.querySelector('select[name=\"customer_id\"]');
-            if(cus) { cus.value = '29'; cus.dispatchEvent(new Event('change', { bubbles: true })); }
-
-            let prod = document.querySelector('select[name=\"items[0][product_service_id]\"]');
-            if(prod) { prod.value = '1'; prod.dispatchEvent(new Event('change', { bubbles: true })); }
-
             let price = document.getElementsByName('items[0][price]')[0];
             if(price) { price.value = '500'; price.dispatchEvent(new Event('input', { bubbles: true })); }
 
             let qty = document.getElementsByName('items[0][quantity]')[0];
             if(qty) { qty.value = '2'; qty.dispatchEvent(new Event('input', { bubbles: true })); }
         ");
-
         $browser->pause(500);
 
-        // 3. Set Dates
+        // Set Dates
         $browser->script([
             "document.querySelector('input[name=\"booking_date\"]')._flatpickr.setDate('2026-12-01', true);",
             "document.querySelector('input[name=\"start_time\"]')._flatpickr.setDate('10:00', true);",
@@ -81,6 +102,7 @@ test('user can create and delete a booking', function () {
         ]);
         
         $browser->type('notes', 'Automated Dusk Test Booking')
+                ->pause(500)
                 ->press('Create Booking')
                 ->waitForLocation('/bookings', 10) 
                 ->assertSee('BKG-')

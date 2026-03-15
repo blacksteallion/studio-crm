@@ -48,7 +48,8 @@ class BookingController extends Controller implements HasMiddleware
 
     public function export(Request $request)
     {
-        $query = Booking::with(['customer', 'assignedStaff', 'inquiry.leadSource', 'location']);
+        // ADDED: 'items' relationship to prevent N+1 queries during export
+        $query = Booking::with(['customer', 'assignedStaff', 'inquiry.leadSource', 'location', 'items']);
         $query = $this->applyFilters($query, $request);
         $bookings = $query->latest('booking_date')->get();
 

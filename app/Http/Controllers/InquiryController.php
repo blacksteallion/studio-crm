@@ -98,7 +98,7 @@ class InquiryController extends Controller implements HasMiddleware
      */
     public function export(Request $request)
     {
-        $query = Inquiry::with(['customer', 'assignedStaff', 'leadSource', 'location']);
+        $query = Inquiry::with(['customer', 'assignedStaff', 'leadSource', 'location', 'items']);
 
         // ADDED: Filter by Active Location Session
         if (session('active_location_id') !== 'all') {
